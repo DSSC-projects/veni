@@ -1,4 +1,4 @@
-# continuous-convolution
+# Gradients without backpropagation
 
 
 
