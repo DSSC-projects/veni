@@ -1,7 +1,8 @@
 import jax.numpy as jnp
+from jax import vmap
 
 
-def relu(x):
+def _relu(x):
     """Applies the rectified linear unit function element-wise
 
     :param x: input
@@ -12,7 +13,19 @@ def relu(x):
     return jnp.maximum(0, x)
 
 
-def leaky_relu(x, negative_slope=0.01):
+def relu(x):
+    """Applies the rectified linear unit function element-wise
+
+    :param x: input
+    :type x: jax.array
+    :return: rectified linear unit on x
+    :rtype: jax.array
+    """
+    f = vmap(_relu)
+    return f(x)
+
+
+def _leaky_relu(x, negative_slope=0.01):
     """Applies the leaky rectified linear unit function element-wise
 
     :param x: input
@@ -25,7 +38,21 @@ def leaky_relu(x, negative_slope=0.01):
     return jnp.maximum(0, x) + negative_slope * jnp.minimum(0, x)
 
 
-def tanh(x):
+def leaky_relu(x):
+    """Applies the leaky rectified linear unit function element-wise
+
+    :param x: input
+    :type x: jax.array
+    :param negative_slope: negative slope, defaults to 0.01
+    :type negative_slope: float, optional
+    :return: leaky rectified linear unit on x
+    :rtype: jax.array
+    """
+    f = vmap(_leaky_relu)
+    return f(x)
+
+
+def _tanh(x):
     """Applies the tanh function element-wise
 
     :param x: input
@@ -36,7 +63,19 @@ def tanh(x):
     return jnp.tanh(x)
 
 
-def sigmoid(x):
+def tanh(x):
+    """Applies the tanh function element-wise
+
+    :param x: input
+    :type x: jax.array
+    :return: tanh on x
+    :rtype: jax.array
+    """
+    f = vmap(_tanh)
+    return f(x)
+
+
+def _sigmoid(x):
     """Applies the sigmoid function element-wise
 
     :param x: input
@@ -45,6 +84,18 @@ def sigmoid(x):
     :rtype: jax.array
     """
     return jnp.exp(x) / (jnp.exp(x) + 1.)
+
+
+def sigmoid(x):
+    """Applies the sigmoid function element-wise
+
+    :param x: input
+    :type x: jax.array
+    :return: sigmoid on x
+    :rtype: jax.array
+    """
+    f = vmap(_sigmoid)
+    return f(x)
 
 
 def log_sigmoid(x):
@@ -58,7 +109,7 @@ def log_sigmoid(x):
     return jnp.log(sigmoid(x))
 
 
-def softplus(x, beta=1, threshold=20):
+def _softplus(x, beta=1, threshold=20):
     """Applies the softplus function element-wise.
     For numerical stability the implementation reverts 
     to the linear function when input*beta > threshold.
@@ -82,7 +133,26 @@ def softplus(x, beta=1, threshold=20):
     return jnp.log(1. + jnp.exp(beta * x)) / beta
 
 
-def softmax(x):
+def softplus(x):
+    """Applies the softplus function element-wise.
+    For numerical stability the implementation reverts 
+    to the linear function when input*beta > threshold.
+
+    :param x: input
+    :type x: jax.array
+    :param beta: paramter, defaults to 1
+    :type beta: int, optional
+    :param threshold: threshold, defaults to 20
+    :type threshold: int, optional
+    :raises ValueError: beta value must be greater than zero
+    :return: softplus on x
+    :rtype: jax.array
+    """
+    f = vmap(_softplus)
+    return f(x)
+
+
+def _softmax(x):
     """Applies the softmax function element-wise.
 
     :param x: input
@@ -91,6 +161,18 @@ def softmax(x):
     :rtype: jax.array
     """
     return jnp.exp(x) / jnp.exp(x).sum()
+
+
+def softmax(x):
+    """Applies the softmax function element-wise.
+
+    :param x: input
+    :type x: jax.array
+    :return: softmax on x
+    :rtype: jax.array
+    """
+    f = vmap(_softmax)
+    return f(x)
 
 
 def log_softmax(x):
