@@ -1,6 +1,5 @@
-from msilib.schema import Class
-from turtle import forward
 import jax.numpy as jnp
+from jax import vmap, jit
 from utils import _init_network_params
 
 
@@ -25,18 +24,22 @@ class MLP(object):
         else:
             self._functions = [func for _ in range(len(self._layers) - 1)]
 
-    def __call__(self, x):
-        return forward(self, x)
+        self._forward = vmap(self.single_forward, in_axes=(None, 0))
 
-    # @jit
-    def forward(self, x):
-        for i, (w, b) in enumerate(self.params[:-1]):
+    def __call__(self, params, x):
+        return self.forward(params, x)
+
+    def single_forward(self, params, x):
+        for i, (w, b) in enumerate(params[:-1]):
             act = jnp.dot(w, x) + b
             x = self._functions[i](act)
 
-        final_w, final_b = self.params[-1]
+        final_w, final_b = params[-1]
 
         return jnp.dot(final_w, x) + final_b
+
+    def forward(self, params, x):
+        return self._forward(params, x)
 
     @property
     def layers(self):
@@ -63,14 +66,17 @@ class Linear(object):
         self._key = key
         self._input = input
         self._output = output
+        self._forward = vmap(self.single_forward)
 
     def __call__(self, x):
-        return forward(self, x)
+        return self.forward(x)
 
-    # @jit
-    def forward(self, x):
+    def single_forward(self, x):
         w, b = self.params[0]
         return jnp.dot(w, x) + b
+
+    def forward(self, x):
+        return self._forward(x)
 
     @property
     def input(self):
@@ -103,9 +109,8 @@ class Sequential(object):
             self._functions = [func for _ in range(len(self._networks) - 1)]
 
     def __call__(self, x):
-        return forward(self, x)
+        return self.forward(self, x)
 
-    # @jit
     def forward(self, x):
         for i, net in enumerate(self._networks[:-1]):
             x = net(x)
