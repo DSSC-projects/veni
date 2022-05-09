@@ -1,9 +1,10 @@
 import jax.numpy as jnp
 from jax import vmap, jit
 from utils import _init_network_params
+from module import Module
 
 
-class MLP(object):
+class MLP(Module):
 
     def __init__(self, layers, func, key):
         """Multiperceptron neural network
@@ -26,9 +27,6 @@ class MLP(object):
 
         self._forward = vmap(self.single_forward, in_axes=(None, 0))
 
-    def __call__(self, params, x):
-        return self.forward(params, x)
-
     def single_forward(self, params, x):
         for i, (w, b) in enumerate(params[:-1]):
             act = jnp.dot(w, x) + b
@@ -50,7 +48,7 @@ class MLP(object):
         return self._key
 
 
-class Linear(object):
+class Linear(Module):
 
     def __init__(self, input, output, key):
         """Base class for linear layer
@@ -67,9 +65,6 @@ class Linear(object):
         self._input = input
         self._output = output
         self._forward = vmap(self.single_forward)
-
-    def __call__(self, x):
-        return self.forward(x)
 
     def single_forward(self, x):
         w, b = self.params[0]
@@ -91,7 +86,7 @@ class Linear(object):
         return self._key
 
 
-class Sequential(object):
+class Sequential(Module):
 
     def __init__(self, list, func):
         """Base class for costructing sequential model
@@ -107,9 +102,6 @@ class Sequential(object):
             self._functions = func
         else:
             self._functions = [func for _ in range(len(self._networks) - 1)]
-
-    def __call__(self, x):
-        return self.forward(self, x)
 
     def forward(self, x):
         for i, net in enumerate(self._networks[:-1]):

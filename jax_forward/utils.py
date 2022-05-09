@@ -35,3 +35,13 @@ def _init_network_params(sizes, key):
     keys = random.split(key, len(sizes))
     return [_random_layer_params(m, n, k)
             for m, n, k in zip(sizes[:-1], sizes[1:], keys)]
+
+
+def _get_vector(key, params):
+    v_shaped = []
+    for w, b in params:
+        key, subkey = random.split(key)
+        v_w = random.normal(key, shape=w.shape)
+        v_b = random.normal(subkey, shape=b.shape)
+        v_shaped.append((v_w, v_b))
+    return v_shaped
