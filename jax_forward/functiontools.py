@@ -83,7 +83,8 @@ def _sigmoid(x):
     :return: sigmoid on x
     :rtype: jax.array
     """
-    return jnp.exp(x) / (jnp.exp(x) + 1.)
+    return  1. / (jnp.exp(-x) + 1.)
+    
 
 
 def sigmoid(x):

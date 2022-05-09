@@ -5,7 +5,6 @@ class Module(abc.ABC):
     def __init__(self):
         pass
 
-    @staticmethod
     @abc.abstractmethod
     def forward(self, params, x):
         pass
@@ -18,7 +17,6 @@ class Activation(abc.ABC):
     def __init__(self, f):
         self._f = f
 
-    @staticmethod
     @abc.abstractmethod
     def forward(self, x):
         pass
