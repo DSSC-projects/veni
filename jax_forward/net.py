@@ -38,7 +38,8 @@ class MLP(Module):
 
     def forward(self, params, x):
         return self._forward(params, x)
-
+    def generate_parameters(self):
+        return None
     @property
     def layers(self):
         return self._layers
@@ -60,18 +61,21 @@ class Linear(Module):
         :param key: random key seed
         :type key: jax.random.PRNGKey
         """
-        self.params = _init_network_params([input, output], key)
         self._key = key
         self._input = input
         self._output = output
-        self._forward = vmap(self.single_forward)
+        
 
-    def single_forward(self, x):
-        w, b = self.params[0]
-        return jnp.dot(w, x) + b
+    def _forward(self,params,x):
+        return jnp.dot(x,params[0]) + params[1]
 
-    def forward(self, x):
-        return self._forward(x)
+    def forward(self,params, x):
+        return self._forward(params,x)
+    
+    def generate_parameters(self):
+
+        params = _init_network_params([self._input, self._output],self._key)
+        return params[0][0].T, params[0][1]
 
     @property
     def input(self):
@@ -88,7 +92,7 @@ class Linear(Module):
 
 class Sequential(Module):
 
-    def __init__(self, list, func):
+    def __init__(self, list : list):
         """Base class for costructing sequential model
 
         :param list: list of models
@@ -96,15 +100,14 @@ class Sequential(Module):
         :param func: activation functions
         :type func: functional
         """
-        self._networks = list
+        self._components = list
 
-        if isinstance(func, list):
-            self._functions = func
-        else:
-            self._functions = [func for _ in range(len(self._networks) - 1)]
-
-    def forward(self, x):
-        for i, net in enumerate(self._networks[:-1]):
-            x = net(x)
-            x = self._functions[i](x)
-        return self._networks[-1](x)
+    def forward(self, params, x):
+        out = x
+        for p,c in zip(params,self._components):
+            out = c(p,out)
+        
+        return out
+    
+    def generate_parameters(self):
+        return [c.generate_parameters() for c in self._components]

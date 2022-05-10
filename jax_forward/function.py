@@ -4,14 +4,17 @@ import functiontools as F
 from module import Activation
 
 
-class ReLu(Activation):
+class ReLU(Activation):
 
     def __init__(self):
         """Base class for relu activation function"""
         super().__init__(vmap(F._relu))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
+    
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
 
 
 class LeakyReLu(Activation):
@@ -20,9 +23,12 @@ class LeakyReLu(Activation):
         """Base class for leaky relu activation function"""
         super().__init__(vmap(F._leaky_relu))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class Tanh(Activation):
 
@@ -30,18 +36,24 @@ class Tanh(Activation):
         """Base class for tanh activation function"""
         super().__init__(vmap(F._tanh))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class Sigmoid(Activation):
     def __init__(self):
         """Base class for sigmoid activation function"""
         super().__init__(vmap(F._sigmoid))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class LogSigmoid(Activation):
 
@@ -49,9 +61,12 @@ class LogSigmoid(Activation):
         """Base class for log sigmoid activation function"""
         super().__init__(vmap(F._log_sigmoid))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class Softplus(Activation):
 
@@ -59,9 +74,12 @@ class Softplus(Activation):
         """Base class for softplus activation function"""
         super().__init__(vmap(F._softplus))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class Softmax(Activation):
 
@@ -69,9 +87,12 @@ class Softmax(Activation):
         """Base class for softmax activation function"""
         super().__init__(vmap(F._softmax))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
 
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+         
 
 class LogSoftmax(Activation):
 
@@ -79,5 +100,11 @@ class LogSoftmax(Activation):
         """Base class for log softmax activation function"""
         super().__init__(vmap(F._log_softmax))
 
-    def forward(self, x):
+    def forward(self,params, x):
         return self._f(x)
+
+    def generate_parameters(self):
+        return jnp.array([]), jnp.array([]) 
+
+
+         
