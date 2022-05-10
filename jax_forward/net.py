@@ -2,6 +2,7 @@ import jax.numpy as jnp
 from jax import vmap, jit
 from utils import _init_network_params
 from module import Module
+import jax.random
 
 
 class MLP(Module):
@@ -27,7 +28,7 @@ class MLP(Module):
 
         self._forward = vmap(self.single_forward, in_axes=(None, 0))
 
-    def single_forward(self, params, x):
+    def single_forward(self, params : jnp.array, x : jnp.array):
         for i, (w, b) in enumerate(params[:-1]):
             act = jnp.dot(w, x) + b
             x = self._functions[i](act)
@@ -51,7 +52,7 @@ class MLP(Module):
 
 class Linear(Module):
 
-    def __init__(self, input, output, key):
+    def __init__(self, input : int, output : int, key : jax.random.PRNGKey):
         """Base class for linear layer
 
         :param input: dimension of input
@@ -66,14 +67,36 @@ class Linear(Module):
         self._output = output
         
 
-    def _forward(self,params,x):
+    def _forward(self,params : jnp.array, x : jnp.array) -> jnp.array:
+        """Public forward method for Linear layer
+
+        :param params: Parameters of the layer
+        :type params: jnp.array
+        :param x: Input
+        :type x: jnp.array
+        :return: Activation
+        :rtype: jnp.array
+        """
         return jnp.dot(x,params[0]) + params[1]
 
-    def forward(self,params, x):
+    def forward(self,params : jnp.array,x : jnp.array) -> jnp.array:
+        """Public forward method for Linear layer
+
+        :param params: Parameters of the layer
+        :type params: jnp.array
+        :param x: Input
+        :type x: jnp.array
+        :return: Activation
+        :rtype: jnp.array
+        """
         return self._forward(params,x)
     
-    def generate_parameters(self):
+    def generate_parameters(self) -> jnp.array:
+        """Generate parameters for current layer
 
+        :return: weight and bias tensors N(0,1) initialized
+        :rtype: jnp.array
+        """
         params = _init_network_params([self._input, self._output],self._key)
         return params[0][0].T, params[0][1]
 
@@ -102,12 +125,26 @@ class Sequential(Module):
         """
         self._components = list
 
-    def forward(self, params, x):
+    def forward(self, params : jnp.array , x : jnp.array) -> jnp.array:
+        """Forward method for sequential object
+
+        :param params: _description_
+        :type params: jnp.array
+        :param x: _description_
+        :type x: jnp.array
+        :return: activation
+        :rtype: jnp.array
+        """
         out = x
         for p,c in zip(params,self._components):
             out = c(p,out)
         
         return out
     
-    def generate_parameters(self):
+    def generate_parameters(self) -> jnp.array:
+        """Generate parameters for layers in sequential
+
+        :return: _description_
+        :rtype: jnp.array
+        """
         return [c.generate_parameters() for c in self._components]
