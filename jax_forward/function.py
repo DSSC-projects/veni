@@ -1,14 +1,14 @@
 import jax.numpy as jnp
 from jax import vmap
-import functiontools as F
-from module import Activation
+from .functiontools import *
+from .module import Activation
 
 
 class ReLU(Activation):
 
     def __init__(self):
         """Base class for relu activation function"""
-        super().__init__(vmap(F._relu))
+        super().__init__(relu)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -21,7 +21,7 @@ class LeakyReLu(Activation):
 
     def __init__(self):
         """Base class for leaky relu activation function"""
-        super().__init__(vmap(F._leaky_relu))
+        super().__init__(leaky_relu)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -34,7 +34,7 @@ class Tanh(Activation):
 
     def __init__(self):
         """Base class for tanh activation function"""
-        super().__init__(vmap(F._tanh))
+        super().__init__(tanh)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -46,7 +46,7 @@ class Tanh(Activation):
 class Sigmoid(Activation):
     def __init__(self):
         """Base class for sigmoid activation function"""
-        super().__init__(vmap(F._sigmoid))
+        super().__init__(sigmoid)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -59,7 +59,7 @@ class LogSigmoid(Activation):
 
     def __init__(self):
         """Base class for log sigmoid activation function"""
-        super().__init__(vmap(F._log_sigmoid))
+        super().__init__(log_sigmoid)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -72,7 +72,7 @@ class Softplus(Activation):
 
     def __init__(self):
         """Base class for softplus activation function"""
-        super().__init__(vmap(F._softplus))
+        super().__init__(softplus)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -85,7 +85,7 @@ class Softmax(Activation):
 
     def __init__(self):
         """Base class for softmax activation function"""
-        super().__init__(vmap(F._softmax))
+        super().__init__(softmax)
 
     def forward(self, x, params=None):
         return self._f(x)
@@ -98,8 +98,7 @@ class LogSoftmax(Activation):
 
     def __init__(self):
         """Base class for log softmax activation function"""
-        super().__init__(vmap(F._log_softmax))
-
+        super().__init__(log_softmax)
     def forward(self, x, params=None):
         return self._f(x)
 

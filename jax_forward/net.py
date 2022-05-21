@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 from jax import vmap, jit
-from utils import _init_network_params
-from module import Module
+from .utils import _init_network_params
+from .module import Module
 import jax.random
 
 
