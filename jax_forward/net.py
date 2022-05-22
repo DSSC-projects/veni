@@ -167,8 +167,7 @@ class Conv2D(Module):
         :rtype: jnp.array
         """
         k_key, b_key = jax.random.split(self._key)
-        params = _init_network_params([self._input, self._output], self._key)
-        return 0.01*jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), 0.01*jax.random.normal(b_key, (1, self._outCh))
+        return 0.01*jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), 0.01*jax.random.normal(b_key, (1, self._outCh, 1, 1))
 
     @property
     def input(self):
@@ -212,8 +211,8 @@ class MaxPool2D(Module):
                                                     window_strides= (self._s, self._s),
                                                     padding = 'VALID')
 
-        self._bf = vmap(self._avp, in_axes=0)
-        self._f = vmap(self._bf, in_axes= 1)
+        self._bf = vmap(self._avp, in_axes=0, out_axes = 0)
+        self._f = vmap(self._bf, in_axes= 1, out_axes= 1)
 
    
     def forward(self, x, params = None):
@@ -279,8 +278,8 @@ class AvgPool2D(Module):
                                                     window_strides= (self._s, self._s),
                                                     padding = 'VALID')
 
-        self._bf = vmap(self._avp, in_axes=0)
-        self._f = vmap(self._bf, in_axes= 1)
+        self._bf = vmap(self._avp, in_axes=0, out_axes= 0)
+        self._f = vmap(self._bf, in_axes= 1, out_axes= 1)
 
    
     def forward(self, x, params = None):
@@ -332,12 +331,14 @@ class Flatten(Module):
 
         :return: _description_
         :rtype: _type_
+
+        TODO: optimize that
         """
         l = 1
         for d in x.shape:
             l = l*d
         
-        l = l/x.shape[0]
+        l = l//x.shape[0]
 
         return x.reshape((x.shape[0],l))
 
