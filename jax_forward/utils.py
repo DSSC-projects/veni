@@ -45,3 +45,4 @@ def _get_vector(key, params):
         v_b = random.normal(subkey, shape=b.shape)
         v_shaped.append((v_w, v_b))
     return v_shaped
+
