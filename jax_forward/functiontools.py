@@ -209,3 +209,20 @@ def log_softmax(x):
     """
     f = vmap(_log_softmax)
     return f(x)
+
+#### LOSSES
+
+def CrossEntropy(y,y_hat):
+    """CrossEntropy loss
+    EXPECTS: tensor of the shape (N, k1, k2, ..., kn)
+    where N is the number of examples in the batch
+
+
+    :param y: Ground truth tensor
+    :type y: jnp.array
+    :param y_hat: Model predictions
+    :type y_hat: jnp.array
+    :return: Loss for each batch
+    :rtype: float
+    """
+    return jnp.sum(-y*jnp.log(y_hat))/y.shape[0]

@@ -56,7 +56,7 @@ class MLP(Module):
 
 class Linear(Module):
 
-    def __init__(self, input, output, key):
+    def __init__(self, input, output, key, bias = True):
         """Base class for linear layer
 
         :param input: dimension of input
@@ -69,6 +69,7 @@ class Linear(Module):
         self._key = key
         self._input = input
         self._output = output
+        self._bias = bias
 
     def _forward(self, x, params):
         """Public forward method for Linear layer
@@ -80,7 +81,11 @@ class Linear(Module):
         :return: Activation
         :rtype: jnp.array
         """
-        return jnp.dot(x, params[0]) + params[1]
+        if not self._bias:
+            return jnp.dot(x,params[0])
+        else:
+
+            return jnp.dot(x, params[0]) + params[1]
 
     def forward(self, x, params):
         """Public forward method for Linear layer
@@ -101,7 +106,10 @@ class Linear(Module):
         :rtype: jnp.array
         """
         params = _init_network_params([self._input, self._output], self._key)
-        return params[0][0].T, params[0][1]
+        if self._bias:
+            return params[0][0].T, params[0][1]
+        else:
+            return params[0][0].T, jnp.array([]) 
 
     @property
     def input(self):
