@@ -175,7 +175,8 @@ class Conv2D(Module):
         :rtype: jnp.array
         """
         k_key, b_key = jax.random.split(self._key)
-        return jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), jax.random.normal(b_key, (1, self._outCh, 1, 1))
+        l = 1/jnp.sqrt(self._outCh * self._inCh * self._k * self._k)
+        return l*jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), jax.random.normal(b_key, (1, self._outCh, 1, 1))
 
     @property
     def input(self):

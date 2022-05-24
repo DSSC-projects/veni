@@ -7,8 +7,8 @@ import jax.numpy as jnp
 from jax import grad, jvp
 jax.config.update('jax_platform_name', 'cpu')
 
-from jax_forward.net import Module, Sequential, Linear
-from jax_forward.function import Sigmoid
+from jax_forward.net import Module, Sequential, Linear, Conv2D, MaxPool2D, Flatten
+from jax_forward.function import Sigmoid, ReLU, Softmax
 from jax_forward.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
 from jax_forward.functiontools import CrossEntropy
 from torchvision.datasets import MNIST
@@ -19,14 +19,14 @@ dspath = '../../datasets'
 batch_size = 64
 num_epochs = 10
 n_targets = 10
-step_size = 1e-4
+step_size = 2e-4
 
 key = jax.random.PRNGKey(10)
 
-#flatten and normalize
+#normalize
 class tf(object):
     def __call__(self, pic):
-        return ( np.ravel(np.array(pic, dtype=jnp.float32)) / 255. - 0.5 ) * 2
+        return np.array(pic, dtype=jnp.float32).reshape([1, 28, 28]) / 255.
 
 print(f"Loading into/from path {dspath}")
 train_dataset = MNIST(dspath, train = True, download= True, transform= tf())
@@ -41,8 +41,21 @@ print("Loaded")
 class LogisticRegressor(Module):
     def __init__(self):
         self.layers = Sequential([
-            Linear(28*28, 10, key),
-            Sigmoid()
+            Conv2D(1,64,3,1,'VALID',key),
+            ReLU(),
+            Conv2D(64,64,3,1,'VALID', key),
+            ReLU(),
+            MaxPool2D(2),
+            Conv2D(64,64,3,1,'VALID', key),
+            ReLU(),
+            Conv2D(64,64,3,1,'VALID', key),
+            ReLU(),
+            MaxPool2D(2),
+            Flatten(),
+            Linear(1024, 1024, key),
+            ReLU(),
+            Linear(1024, 10, key),
+            Softmax()
         ])
 
         self.params = self.layers.generate_parameters()
@@ -56,11 +69,7 @@ params = model.params
 
 def loss(params, x, y):
     y_hat = model(x,params)
-
-    l1 = y*jnp.log(y_hat)
-    l2 = (1-y)*jnp.log(1 - y_hat)
-    l = -jnp.sum(l1 + l2)
-    return l/y.shape[0]
+    return CrossEntropy(y, y_hat)
 
 def accuracy(y,y_hat):
     model_predictions = jnp.argmax(y_hat, axis= 1)
@@ -126,7 +135,7 @@ params = model.params
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
-        key, _ = jax.random.split(key)
+        key = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
         params = update_fwd(params, image, one_hot_label)
         # loss info
