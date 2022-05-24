@@ -6,6 +6,6 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: pip install black[jupyter]
       - uses: actions/checkout@v2
+      - run: pip3 install black[jupyter]
       - uses: psf/black@stable
