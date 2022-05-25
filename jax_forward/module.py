@@ -35,8 +35,8 @@ class Optimizer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def __update(self, params, grad):
+    def update(self, params, grad):
         pass
 
     def __call__(self, params, grad):
-        return self.__update(params, grad)
+        return self.update(params, grad)
