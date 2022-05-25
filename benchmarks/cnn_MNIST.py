@@ -16,7 +16,7 @@ import numpy as np
 
 
 dspath = '../../datasets'
-batch_size = 64
+batch_size = 128
 num_epochs = 3 
 n_targets = 10
 step_size = 2e-4
@@ -68,7 +68,7 @@ test_generator = NumpyLoader(test_dataset, batch_size= batch_size )
 print("Loaded")
 
 
-class LogisticRegressor(Module):
+class cnn(Module):
     def __init__(self):
         self.layers = Sequential([
             Conv2D(1,64,3,1,'VALID',key),
@@ -94,7 +94,7 @@ class LogisticRegressor(Module):
     def forward(self,x,params):
         return self.layers(x,params)
 
-model = LogisticRegressor()
+model = cnn()
 params = model.params
 
 def loss(params, x, y):
@@ -155,7 +155,8 @@ def update_fwd(params, x, y):
           for (w, b), (dw, db) in zip(params, v)]
 
 print(f"Forward training")
-model = LogisticRegressor()
+
+model = cnn()
 params = model.params
 
 for epoch in range(num_epochs):
