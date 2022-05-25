@@ -225,4 +225,4 @@ def CrossEntropy(y,y_hat):
     :return: Loss for each batch
     :rtype: float
     """
-    return jnp.sum(-y*jnp.log(y_hat))/y.shape[0]
+    return jnp.sum(-y*jnp.log(y_hat))

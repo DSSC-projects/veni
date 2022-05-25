@@ -17,11 +17,41 @@ import numpy as np
 
 dspath = '../../datasets'
 batch_size = 64
-num_epochs = 10
+num_epochs = 3 
 n_targets = 10
 step_size = 2e-4
 
 key = jax.random.PRNGKey(10)
+
+logging_freq = 200
+
+save_path = 'logs/cnn_MNIST'
+bwd_path  = os.path.join(save_path, 'bwd') 
+fwd_path  = os.path.join(save_path, 'fwd') 
+
+os.makedirs(bwd_path, exist_ok= True)
+os.makedirs(fwd_path, exist_ok= True)
+
+bwd_run = 1
+fwd_run = 1
+
+l = os.listdir(bwd_path)
+
+if len(l) != 0:
+    bwd_run = int(l[-1].split('.')[-1]) + 1
+
+l = os.listdir(fwd_path)
+
+if len(l) != 0:
+    fwd_run = int(l[-1].split('.')[-1]) + 1
+
+bwd_file = open(os.path.join(bwd_path, f"run.{bwd_run}"),'w')
+print(f"logging into {bwd_file.name}")
+fwd_file = open(os.path.join(fwd_path, f"run.{fwd_run}"),'w')
+print(f"logging into {fwd_file.name}")
+
+bwd_file.write(f"#epoch,batch_number,running_loss\n")
+fwd_file.write(f"#epoch,batch_number,running_loss\n")
 
 #normalize
 class tf(object):
@@ -82,6 +112,15 @@ def update_bwd(params, x, y):
 
 print(f"Backward training")
 
+def evaluatePerf(gen):
+    acc = 0
+    count = 0
+    for x,y in gen:
+        y_hat = model(x,params)
+        acc += accuracy(y,y_hat)*x.shape[0]
+        count += x.shape[0]
+    return acc/count
+
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
@@ -90,30 +129,17 @@ for epoch in range(num_epochs):
         # loss info
         loss_item =  loss(params, image, one_hot_label)
         running_loss = running_loss + loss_item
-        if i % 200 == 199:
-            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 200:.3f}')
+        if i % logging_freq == logging_freq - 1:
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
+            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
             running_loss = 0.0  
 
 
-#model assessment
-acc = 0
-count = 0
-for x,y in train_generator:
-    y_hat = model(x,params)
-    acc += accuracy(y,y_hat)*x.shape[0]
-    count += x.shape[0]
-
-print(f"Training set accuracy {acc/count}")
+print(f"Training set accuracy {evaluatePerf(train_generator)}")
 
 
-acc = 0
-count = 0
-for x,y in test_generator:
-    y_hat = model(x,params)
-    acc += accuracy(y,y_hat)*x.shape[0]
-    count += x.shape[0]
+print(f"Training set accuracy {evaluatePerf(test_generator)}")
 
-print(f"Test set accuracy {acc/count}")
 def get_vector(params):
     v_shaped = []
     for w, b in params:
@@ -141,27 +167,15 @@ for epoch in range(num_epochs):
         # loss info
         loss_item =  loss(params, image, one_hot_label)
         running_loss = running_loss + loss_item
-        if i % 200 == 199:
-            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 200:.3f}')
-            running_loss = 0.0  
+        if i % logging_freq == logging_freq - 1:
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
+            fwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
+            running_loss = 0.0   
+
+print(f"Training set accuracy {evaluatePerf(train_generator)}")
 
 
-#model assessment
-acc = 0
-count = 0
-for x,y in train_generator:
-    y_hat = model(x,params)
-    acc += accuracy(y,y_hat)*x.shape[0]
-    count += x.shape[0]
+print(f"Training set accuracy {evaluatePerf(test_generator)}")
 
-print(f"Training set accuracy {acc/count}")
-
-
-acc = 0
-count = 0
-for x,y in test_generator:
-    y_hat = model(x,params)
-    acc += accuracy(y,y_hat)*x.shape[0]
-    count += x.shape[0]
-
-print(f"Test set accuracy {acc/count}")
+fwd_file.close()
+bwd_file.close()
