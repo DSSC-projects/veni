@@ -35,13 +35,16 @@ bwd_run = 1
 fwd_run = 1
 
 l = os.listdir(bwd_path)
+l.sort()
 
 if len(l) != 0:
     bwd_run = int(l[-1].split('.')[-1]) + 1
 
 l = os.listdir(fwd_path)
-
+l.sort()
+print(len(l))
 if len(l) != 0:
+    print(l[-1].split('.')[-1])
     fwd_run = int(l[-1].split('.')[-1]) + 1
 
 bwd_file = open(os.path.join(bwd_path, f"run.{bwd_run}"),'w')
