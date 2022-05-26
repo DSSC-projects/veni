@@ -2,6 +2,7 @@
 
 import os, sys
 sys.path.append('../')
+sys.path.append('/home/francesco/Desktop/dssc/deeplearning/proj/DL-project')
 import jax 
 import jax.numpy as jnp
 from jax import grad, jvp
@@ -14,14 +15,18 @@ from jax_forward.functiontools import CrossEntropy
 from torchvision.datasets import MNIST
 import numpy as np
 
+def rate_decay(i,eta_0, k = 1e-4):
+    return eta_0 * np.exp(-i * k)
 
 dspath = '../../datasets'
-batch_size = 128
-num_epochs = 3 
+batch_size = 64
+num_epochs = 5
 n_targets = 10
 step_size = 2e-4
 
-key = jax.random.PRNGKey(10)
+s0 = 2e-4
+
+key = jax.random.PRNGKey(111111)
 
 logging_freq = 200
 
@@ -124,6 +129,8 @@ def evaluatePerf(gen):
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
+
+        step_size = rate_decay(i,2e-4)
         one_hot_label = one_hot(label, n_targets)
         params = update_bwd(params, image, one_hot_label)
         # loss info
@@ -151,6 +158,7 @@ def get_vector(params):
 def update_fwd(params, x, y):
     v = _get_vector(key,params)
     _ , proj = jvp(lambda p: loss(p,x,y), (params, ), (v,) )
+    p = proj
     return [(w - step_size * proj * dw, b - step_size * proj * db)
           for (w, b), (dw, db) in zip(params, v)]
 
@@ -162,6 +170,7 @@ params = model.params
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
+        step_size = rate_decay(i,1e-4)
         key = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
         params = update_fwd(params, image, one_hot_label)
