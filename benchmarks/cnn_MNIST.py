@@ -2,7 +2,7 @@
 
 import os, sys
 sys.path.append('../')
-sys.path.append('/home/francesco/Desktop/dssc/deeplearning/proj/DL-project')
+#sys.path.append('/home/francesco/Desktop/dssc/deeplearning/proj/DL-project')
 import jax 
 import jax.numpy as jnp
 from jax import grad, jvp
