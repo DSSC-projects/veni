@@ -28,3 +28,15 @@ class Activation(abc.ABC):
     @abc.abstractmethod
     def generate_parameters(self):
         pass
+
+
+class Optimizer(abc.ABC):
+    def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def update(self, params, grad):
+        pass
+
+    def __call__(self, params, grad):
+        return self.update(params, grad)
