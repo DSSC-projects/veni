@@ -20,7 +20,6 @@ class SGD(Optimizer):
         :param nestereov: enables Nesterov momentum, defaults to False
         :type nestereov: bool, optional
         """
-        self.shape = params.shape
         self.momentum = momentum
         self.dampening = dampening
         self.eta = eta
@@ -28,7 +27,7 @@ class SGD(Optimizer):
         self.prev_grad = None
         self.t = 0
 
-    def __update(self, params, grad):
+    def update(self, params, grad):
         """Update method for SGD
 
         :param params: paramters to optimize
@@ -51,7 +50,8 @@ class SGD(Optimizer):
 
         self.prev_grad = grad
         self.t += 1
-        return params - self.eta * grad
+        return [(w - self.eta * dw, b - self.eta * db)
+                for (w, b), (dw, db) in zip(params, grad)]
 
 
 class Adam(Optimizer):
@@ -78,7 +78,7 @@ class Adam(Optimizer):
         self.m = jnp.zeros(self.shape)
         self.v = jnp.zeros(self.shape)
 
-    def __update(self, params, grad):
+    def update(self, params, grad):
         """Update method for Adam
 
         :param params: paramters to optimize
