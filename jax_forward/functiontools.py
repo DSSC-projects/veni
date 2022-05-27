@@ -226,3 +226,7 @@ def CrossEntropy(y,y_hat):
     :rtype: float
     """
     return jnp.sum(-y*jnp.log(y_hat))/y.shape[0]
+
+def MSE(y,y_hat):
+
+    return jnp.sum( (y - y_hat)**2)/y.shape[0]
