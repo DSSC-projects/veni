@@ -34,9 +34,13 @@ class Optimizer(abc.ABC):
     def __init__(self):
         pass
 
-    @abc.abstractmethod
     def update(self, params, grad):
-        pass
+        return [ (self.__update(w, gw), self.__update(b, gb)) for (w,b), (gw, gb) in zip(params, grad) ]
+
 
     def __call__(self, params, grad):
         return self.update(params, grad)
+
+   # @abc.abstractmethod
+   # def __update(self,params,grad):
+   #     pass

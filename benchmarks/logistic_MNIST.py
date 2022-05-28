@@ -12,6 +12,7 @@ from jax_forward.net import Module, Sequential, Linear
 from jax_forward.function import Sigmoid
 from jax_forward.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
 from jax_forward.functiontools import CrossEntropy
+from jax_forward.optim import SGD
 from torchvision.datasets import MNIST
 import numpy as np
 
@@ -42,7 +43,6 @@ if len(l) != 0:
 
 l = os.listdir(fwd_path)
 l.sort(key = lambda x: int(str.split(x,'.')[-1]))
-print(len(l))
 if len(l) != 0:
     print(l[-1].split('.')[-1])
     fwd_run = int(l[-1].split('.')[-1]) + 1
@@ -89,6 +89,7 @@ class LogisticRegressor(Module):
 
 model = LogisticRegressor()
 params = model.params
+optimizer = SGD(params, eta = 2e-4)
 
 def loss(params, x, y):
     y_hat = model(x,params)
@@ -121,8 +122,10 @@ for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
         one_hot_label = one_hot(label, n_targets)
-        params = update_bwd(params, image, one_hot_label)
+        g = grad(loss)(params,image, one_hot_label)
+        params = optimizer.update(params,g)
         # loss info
+       # update_bwd(params, image, one_hot_label)
         loss_item =  loss(params, image, one_hot_label)
         running_loss = running_loss + loss_item
         if i % logging_freq == logging_freq - 1:
@@ -155,14 +158,20 @@ def update_fwd(params, x, y):
 print(f"Forward training")
 model = LogisticRegressor()
 params = model.params
+optimizer = SGD(params, eta = 2e-4)
+
 
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
         key, _ = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
-        params = update_fwd(params, image, one_hot_label)
+        v = _get_vector(key,params)
+        _ , proj = jvp(lambda p: loss(p,image,one_hot_label), (params, ), (v,) )
         # loss info
+        params = optimizer.update(params, v, scale = proj)
+
+       # update_fwd(params, image, one_hot_label)
         loss_item =  loss(params, image, one_hot_label)
         running_loss = running_loss + loss_item
         if i % logging_freq == logging_freq - 1:

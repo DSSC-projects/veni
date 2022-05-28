@@ -6,23 +6,23 @@ from .module import Optimizer
 class SGD(Optimizer):
 
     def __init__(self, params, momentum=0,
-                 dampening=0, eta=1e-3, nestereov=False):
+                damping=0, eta=1e-3, nestereov=False):
         """Implements stochastic gradient descent (optionally with momentum).
 
         :param params: paramters to optimize
         :type params: jax.array
         :param momentum: momentum factor, defaults to 0
         :type momentum: int, optional
-        :param dampening: dampening for momentum, defaults to 0
-        :type dampening: int, optional
+        :param damping: damping for momentum, defaults to 0
+        :type damping: int, optional
         :param eta:  learning rate, defaults to 1e-3
         :type eta: float, optional
         :param nestereov: enables Nesterov momentum, defaults to False
         :type nestereov: bool, optional
         """
-        self.shape = params.shape
+        #self.shape = params.shape
         self.momentum = momentum
-        self.dampening = dampening
+        self.damping = damping
         self.eta = eta
         self.nesterov = nestereov
         self.prev_grad = None
@@ -42,7 +42,7 @@ class SGD(Optimizer):
             if self.t == 0:
                 self.b = grad
             else:
-                self.b = self.momentum * self.b + (1 - self.dampening) * grad
+                self.b = self.momentum * self.b + (1 - self.damping) * grad
 
             if self.nesterov and self.t > 0:
                 grad = self.prev_grad + self.momentum * self.b
@@ -52,6 +52,10 @@ class SGD(Optimizer):
         self.prev_grad = grad
         self.t += 1
         return params - self.eta * grad
+
+    def update(self, params, grad, scale = 1):
+        return [ (self.__update(w, gw)*scale, self.__update(b, gb)*scale) for (w,b), (gw, gb) in zip(params, grad) ]
+
 
 
 class Adam(Optimizer):
