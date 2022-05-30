@@ -21,7 +21,7 @@ def rate_decay(i,eta_0, k = 1e-4):
 
 dspath = '../../datasets'
 batch_size = 64
-num_epochs = 10
+num_epochs = 20
 n_targets = 10
 step_size = 2e-4
 
@@ -31,7 +31,7 @@ key = jax.random.PRNGKey(111111)
 
 logging_freq = 200
 
-save_path = 'logs/cnn_MNIST'
+save_path = 'logs/mlp_MNIST'
 bwd_path  = os.path.join(save_path, 'bwd') 
 fwd_path  = os.path.join(save_path, 'fwd') 
 
@@ -62,7 +62,7 @@ fwd_file.write(f"#epoch,batch_number,running_loss\n")
 #normalize
 class tf(object):
     def __call__(self, pic):
-        return np.array(pic, dtype=jnp.float32).reshape([1, 28, 28]) / 255.
+        return np.array(np.ravel(pic), dtype=jnp.float32)/ 255.
 
 print(f"Loading into/from path {dspath}")
 train_dataset = MNIST(dspath, train = True, download= True, transform= tf())
@@ -74,21 +74,10 @@ test_generator = NumpyLoader(test_dataset, batch_size= batch_size )
 print("Loaded")
 
 
-class cnn(Module):
+class mlp(Module):
     def __init__(self):
         self.layers = Sequential([
-            Conv2D(1,64,3,1,'VALID',key),
-            ReLU(),
-            Conv2D(64,64,3,1,'VALID', key),
-            ReLU(),
-            MaxPool2D(2),
-            Conv2D(64,64,3,1,'VALID', key),
-            ReLU(),
-            Conv2D(64,64,3,1,'VALID', key),
-            ReLU(),
-            MaxPool2D(2),
-            Flatten(),
-            Linear(1024, 1024, key),
+            Linear(28*28, 1024, key),
             ReLU(),
             Linear(1024, 10, key),
             Softmax()
@@ -100,7 +89,7 @@ class cnn(Module):
     def forward(self,x,params):
         return self.layers(x,params)
 
-model = cnn()
+model = mlp()
 params = model.params
 
 def loss(params, x, y):
@@ -127,26 +116,26 @@ def evaluatePerf(gen):
         count += x.shape[0]
     return acc/count
 
-#for epoch in range(num_epochs):
-#    running_loss = 0
-#    for i, (image, label) in enumerate(train_generator):
-#
-#        step_size = rate_decay(i,2e-4)
-#        one_hot_label = one_hot(label, n_targets)
-#        params = update_bwd(params, image, one_hot_label)
-#        # loss info
-#        loss_item =  loss(params, image, one_hot_label)
-#        running_loss = running_loss + loss_item
-#        if i % logging_freq == logging_freq - 1:
-#            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
-#            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
-#            running_loss = 0.0  
-#
-#
-#print(f"Training set accuracy {evaluatePerf(train_generator)}")
-#
-#
-#print(f"Training set accuracy {evaluatePerf(test_generator)}")
+for epoch in range(num_epochs):
+    running_loss = 0
+    for i, (image, label) in enumerate(train_generator):
+
+        #step_size = rate_decay(i,2e-4)
+        one_hot_label = one_hot(label, n_targets)
+        params = update_bwd(params, image, one_hot_label)
+        # loss info
+        loss_item =  loss(params, image, one_hot_label)
+        running_loss = running_loss + loss_item
+        if i % logging_freq == logging_freq - 1:
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
+            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
+            running_loss = 0.0  
+
+
+print(f"Training set accuracy {evaluatePerf(train_generator)}")
+
+
+print(f"Training set accuracy {evaluatePerf(test_generator)}")
 
 def get_vector(params):
     v_shaped = []
@@ -168,13 +157,13 @@ def update_fwd(params, x, y):
 
 print(f"Forward training")
 
-model = cnn()
+model = mlp()
 params = model.params
 
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
-        step_size = 1e-5 #rate_decay(i,1e-4)
+#        step_size = rate_decay(i, 5e-4)
         key = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
         params = update_fwd(params, image, one_hot_label)
