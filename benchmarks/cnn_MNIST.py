@@ -21,7 +21,7 @@ def rate_decay(i,eta_0, k = 1e-4):
 
 dspath = '../../datasets'
 batch_size = 64
-num_epochs = 10
+num_epochs = 3 
 n_targets = 10
 step_size = 2e-4
 
@@ -127,25 +127,25 @@ def evaluatePerf(gen):
         count += x.shape[0]
     return acc/count
 
-#for epoch in range(num_epochs):
-#    running_loss = 0
-#    for i, (image, label) in enumerate(train_generator):
-#
-#        step_size = rate_decay(i,2e-4)
-#        one_hot_label = one_hot(label, n_targets)
-#        params = update_bwd(params, image, one_hot_label)
-#        # loss info
-#        loss_item =  loss(params, image, one_hot_label)
-#        running_loss = running_loss + loss_item
-#        if i % logging_freq == logging_freq - 1:
-#            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
-#            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
-#            running_loss = 0.0  
-#
-#
+for epoch in range(num_epochs):
+    running_loss = 0
+    for i, (image, label) in enumerate(train_generator):
+
+        step_size = rate_decay(i,0.5e-5)
+        one_hot_label = one_hot(label, n_targets)
+        params = update_bwd(params, image, one_hot_label)
+        # loss info
+        loss_item =  loss(params, image, one_hot_label)
+        running_loss = running_loss + loss_item
+        if i % logging_freq == logging_freq - 1:
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
+            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
+            running_loss = 0.0  
+
+
 #print(f"Training set accuracy {evaluatePerf(train_generator)}")
-#
-#
+
+
 #print(f"Training set accuracy {evaluatePerf(test_generator)}")
 
 def get_vector(params):
@@ -166,6 +166,26 @@ def update_fwd(params, x, y):
     return [(w - step_size * proj * dw , b - step_size * proj * db)
           for (w, b), (dw, db) in zip(params, v)]
 
+def grad_by_forward(key, params, loss, data, N=2):
+    x, y = data
+    for i in range(N):
+        key, _ = jax.random.split(key)
+        v = _get_vector(key, params)
+        _, proj = jax.jvp(lambda p: loss(p, x, y), (params, ), (v,))
+        grad_now = [(proj * dw, proj * db) for (dw, db) in v]
+
+        if i == 0:
+            grad = grad_now
+
+        elif i > 0:
+            grad = [(dw + dw_prev, db + db_prev)
+                           for (dw, db), (dw_prev, db_prev) in zip(grad_now, grad)]
+
+
+    if N != 1:
+        grad = [(dw / N, db / N) for (dw, db) in grad]
+
+    return grad
 print(f"Forward training")
 
 model = cnn()
@@ -174,10 +194,14 @@ params = model.params
 for epoch in range(num_epochs):
     running_loss = 0
     for i, (image, label) in enumerate(train_generator):
-        step_size = 1e-5 #rate_decay(i,1e-4)
+        step_size = rate_decay(i,0.5e-5)
         key = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
-        params = update_fwd(params, image, one_hot_label)
+
+        g = grad_by_forward(key,params,loss,(image,one_hot_label), 1)
+        params = [(w - step_size *  dw , b - step_size *  db)
+          for (w, b), (dw, db) in zip(params, g)]
+        #params = update_fwd(params, image, one_hot_label)
         # loss info
         loss_item =  loss(params, image, one_hot_label)
         running_loss = running_loss + loss_item

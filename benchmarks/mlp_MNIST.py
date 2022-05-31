@@ -21,7 +21,7 @@ def rate_decay(i,eta_0, k = 1e-4):
 
 dspath = '../../datasets'
 batch_size = 64
-num_epochs = 20
+num_epochs = 5 
 n_targets = 10
 step_size = 2e-4
 
