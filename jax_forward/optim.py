@@ -5,7 +5,7 @@ from .module import Optimizer
 
 class SGD(Optimizer):
 
-    def __init__(self, momentum=0, dampening=0, eta=1e-3, nestereov=False):
+    def __init__(self, params, momentum=0, dampening=0, eta=1e-3, nestereov=False):
         """Implements stochastic gradient descent (optionally with momentum).
 
         :param params: paramters to optimize
@@ -19,6 +19,7 @@ class SGD(Optimizer):
         :param nestereov: enables Nesterov momentum, defaults to False
         :type nestereov: bool, optional
         """
+        self.params = params
         self.momentum = momentum
         self.dampening = dampening
         self.eta = eta
