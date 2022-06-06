@@ -1,0 +1,3 @@
+#epoch,batch_number,running_loss
+1,200,nan
+1,400,nan
