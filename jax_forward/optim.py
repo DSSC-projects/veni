@@ -5,30 +5,28 @@ from .module import Optimizer
 
 class SGD(Optimizer):
 
-    def __init__(self, params, momentum=0,
-                damping=0, eta=1e-3, nestereov=False):
+    def __init__(self, momentum=0, dampening=0, eta=1e-3, nestereov=False):
         """Implements stochastic gradient descent (optionally with momentum).
 
         :param params: paramters to optimize
         :type params: jax.array
         :param momentum: momentum factor, defaults to 0
         :type momentum: int, optional
-        :param damping: damping for momentum, defaults to 0
-        :type damping: int, optional
+        :param dampening: dampening for momentum, defaults to 0
+        :type dampening: int, optional
         :param eta:  learning rate, defaults to 1e-3
         :type eta: float, optional
         :param nestereov: enables Nesterov momentum, defaults to False
         :type nestereov: bool, optional
         """
-        #self.shape = params.shape
         self.momentum = momentum
-        self.damping = damping
+        self.dampening = dampening
         self.eta = eta
         self.nesterov = nestereov
         self.prev_grad = None
         self.t = 0
 
-    def __update(self, params, grad):
+    def update(self, params, grad):
         """Update method for SGD
 
         :param params: paramters to optimize
@@ -42,20 +40,19 @@ class SGD(Optimizer):
             if self.t == 0:
                 self.b = grad
             else:
-                self.b = self.momentum * self.b + (1 - self.damping) * grad
+                self.b = [self.momentum * b + (1 - self.dampening) * g
+                          for (b, g) in zip(self.b, grad)]
 
             if self.nesterov and self.t > 0:
-                grad = self.prev_grad + self.momentum * self.b
+                grad = [prev_grad + self.momentum * b
+                        for (b, prev_grad) in zip(self.b, self.prev_grad)]
             else:
                 grad = self.b
 
         self.prev_grad = grad
         self.t += 1
-        return params - self.eta * grad
-
-    def update(self, params, grad, scale = 1):
-        return [ (self.__update(w, gw)*scale, self.__update(b, gb)*scale) for (w,b), (gw, gb) in zip(params, grad) ]
-
+        return [(w - self.eta * dw, b - self.eta * db)
+                for (w, b), (dw, db) in zip(params, grad)]
 
 
 class Adam(Optimizer):
@@ -74,15 +71,23 @@ class Adam(Optimizer):
         :param eta: learning rate, defaults to 1e-3
         :type eta: float, optional
         """
-        self.shape = params.shape
         self.beta1 = beta1
         self.beta2 = beta2
         self.eta = eta
+        self.tolerance = 1e-8
         self.t = 0
-        self.m = jnp.zeros(self.shape)
-        self.v = jnp.zeros(self.shape)
+        self.m = [0 for _ in range(len(params)*2)]
+        self.v = [0 for _ in range(len(params)*2)]
 
-    def __update(self, params, grad):
+    def _single_update(self, grad, m, v):
+        m = self.beta1 * m + (1. - self.beta1) * grad
+        v = self.beta2 * v + (1. - self.beta2) * grad ** 2
+        m_hat = m / (1. - self.beta1 ** self.t)
+        v_hat = v / (1. - self.beta2 ** self.t)
+        update_coeff = m_hat / (jnp.sqrt(v_hat) + self.tolerance)
+        return update_coeff, m, v
+
+    def update(self, params, grads):
         """Update method for Adam
 
         :param params: paramters to optimize
@@ -92,10 +97,16 @@ class Adam(Optimizer):
         :return: optimized parameters
         :rtype: jax.array
         """
-        tolerance = 1e-8
         self.t += 1
-        self.m = self.beta1 * self.m + (1. - self.beta1) * grad
-        self.v = self.beta2 * self.v + (1. - self.beta2) * grad ** 2
-        m_hat = self.m / (1. - self.beta1 ** self.t)
-        v_hat = self.v / (1. - self.beta2 ** self.t)
-        return params - self.eta * m_hat / (jnp.sqrt(v_hat) + tolerance)
+        update_list = []
+        for i, ((w, b), (dw, db)) in enumerate(zip(params, grads)):
+
+            dw, self.m[i], self.v[i] = self._single_update(
+                self, dw, self.m[i], self.v[i])
+
+            db, self.m[i + 1], self.v[i + 1] = self._single_update(
+                self, dw, self.m[i + 1], self.v[i + 1])
+
+            update_list.append((w - self.eta * dw, b - self.eta * db))
+
+        return update_list
