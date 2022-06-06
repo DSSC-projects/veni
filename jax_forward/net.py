@@ -1,4 +1,3 @@
-from posixpath import split
 import jax.numpy as jnp
 from jax import vmap, jit
 from .utils import _init_network_params
