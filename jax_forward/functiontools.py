@@ -196,7 +196,8 @@ def _log_softmax(x):
     :return: logarithmic softmax on x
     :rtype: jax.array
     """
-    return jnp.log(_softmax(x))
+    xx = - jnp.log(jnp.sum(jnp.exp(x))) 
+    return x + xx 
 
 
 def log_softmax(x):
@@ -226,6 +227,25 @@ def CrossEntropy(y,y_hat):
     :rtype: float
     """
     return jnp.sum(-y*jnp.log(y_hat))/y.shape[0]
+
+def CrossEntropyV2(y,y_hat):
+    """CrossEntropy loss
+    EXPECTS: tensor of the shape (N, k1, k2, ..., kn)
+    where N is the number of examples in the batch
+
+
+    :param y: Ground truth tensor
+    :type y: jnp.array
+    :param y_hat: Model predictions
+    :type y_hat: jnp.array
+    :return: Loss for each batch
+    :rtype: float
+    """
+    logprobs = jnp.log(y_hat)
+    target_class = jnp.argmax(y, axis=1)
+    nll = jnp.take_along_axis(logprobs, jnp.expand_dims(target_class, axis=1), axis=1)
+    ce = -jnp.mean(nll)
+    return ce
 
 def MSE(y,y_hat):
 

@@ -1,9 +1,11 @@
+from posixpath import split
 import jax.numpy as jnp
 from jax import vmap, jit
 from .utils import _init_network_params
 from .module import Module
 import jax.random
 import jax
+import jax.nn
 
 
 
@@ -100,16 +102,22 @@ class Linear(Module):
         return self._forward(x, params)
 
     def generate_parameters(self):
+        self._key = jax.random.split(self._key)
         """Generate parameters for current layer
 
         :return: weight and bias tensors N(0,1) initialized
         :rtype: jnp.array
         """
-        params = _init_network_params([self._input, self._output], self._key)
+        w_shape = (self._input, self._output)
+        b_shape = (1, self._output)
+
+        w_init = jax.nn.initializers.he_uniform(in_axis=0, out_axis=1)
+        b_init = jax.nn.initializers.he_uniform(in_axis = 0, out_axis=1)
+        params = [ w_init(self._key[0], w_shape), b_init(self._key[1], b_shape)]
         if self._bias:
-            return params[0][0].T, params[0][1]
+            return params[0], params[1]
         else:
-            return params[0][0].T, jnp.array([]) 
+            return params[0], jnp.array([]) 
 
     @property
     def input(self):
@@ -176,7 +184,12 @@ class Conv2D(Module):
         """
         k_key, b_key = jax.random.split(self._key)
         l = 1/jnp.sqrt(self._inCh )
-        return l*jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), jax.random.normal(b_key, (1, self._outCh, 1, 1)) / jnp.sqrt(self._inCh)
+        kernel_shape = (self._outCh, self._inCh, self._k, self._k)
+        bias_shape = (1, self._outCh, 1, 1)
+        k_init = jax.nn.initializers.he_uniform(in_axis = 1, out_axis=0)
+        b_init = jax.nn.initializers.he_uniform(out_axis= 1)
+        return k_init(k_key, shape = kernel_shape), b_init(b_key,shape = bias_shape)
+        #return l*jax.random.normal(k_key, (self._outCh, self._inCh, self._k, self._k)), jax.random.normal(b_key, (1, self._outCh, 1, 1)) / jnp.sqrt(self._inCh)
 
     @property
     def input(self):
