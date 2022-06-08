@@ -57,7 +57,7 @@ To install the package just type:
 The directory `Examples` contains some examples showing how to use **JaxForward**.
 
 ## Benchmarks
-The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **JaxForward** interface. We further provides logs for efficient later analysis of the data.
+The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **JaxForward** interface. We further provide logs for efficient analysis of the data.
 
 ### References
 To implement the package we follow these works:
