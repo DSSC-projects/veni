@@ -1,4 +1,6 @@
-**JaxForward**: JAX neural network using forward automatic differentiation.
+# JaxForward
+
+A neural network package using forward automatic differentiation based on JAX.
 
 ## Table of contents
 * [Description](#description)
@@ -66,10 +68,11 @@ To implement the package we follow these works:
 propagation, 2022
 * D. Silver, A. Goyal, I. Danihelka, M. Hessel, and H. van Hasselt. _Learning by directional
 gradient descent. In International Conference on Learning Representations, 2022
+* Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C., Maclaurin, D., Necula, G., Paszke, A., VanderPlas, J., Wanderman-Milne, S., & Zhang, Q. (2018). JAX: composable transformations of Python+NumPy programs (0.3.13) [Computer software]. http://github.com/google/jax
 
 
 ## Authors and contributors
-**JaxForward** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:>
+**JaxForward** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
 * [Francesco Tomba](mailto:francesco.tomba17@gmail.com)
 * [Dario Coscia](mailto:dariocos99@gmail.com)
 * [Alessandro Pierro](mailto:pierro@vision-e.it)
@@ -99,18 +102,12 @@ We'd love to accept your patches and contributions to this project. There are ju
      script: ./code_formatter.sh. You should also run [pylint][] over your code.
      It's not strictly necessary that your code be completely "lint-free",
      but this will help you find common style issues.
-
-  4. Any significant changes should almost always be accompanied by tests.  The
-     project already has good test coverage, so look at some of the existing
-     tests if you're unsure how to go about it. We're using [coveralls][] that
-     is an invaluable tools for seeing which parts of your code aren't being
-     exercised by your tests.
-
-  5. Do your best to have [well-formed commit messages][] for each change.
+     
+  4. Do your best to have [well-formed commit messages][] for each change.
      This provides consistency throughout the project, and ensures that commit
      messages are able to be formatted properly by various git tools.
 
-  6. Finally, push the commits to your fork and submit a [pull request][]. Please,
+  5. Finally, push the commits to your fork and submit a [pull request][]. Please,
      remember to rebase properly in order to maintain a clean, linear git history.
 
 [forking]: https://help.github.com/articles/fork-a-repo
