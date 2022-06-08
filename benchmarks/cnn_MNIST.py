@@ -10,10 +10,10 @@ import jax.numpy as jnp
 from jax import grad, jvp
 jax.config.update('jax_platform_name', 'cpu')
 
-from jax_forward.net import Module, Sequential, Linear, Conv2D, MaxPool2D, Flatten
-from jax_forward.function import Sigmoid, ReLU, Softmax, LogSoftmax
-from jax_forward.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
-from jax_forward.functiontools import CrossEntropy, MSE, CrossEntropyV2
+from vina.net import Module, Sequential, Linear, Conv2D, MaxPool2D, Flatten
+from vina.function import Sigmoid, ReLU, Softmax, LogSoftmax
+from vina.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
+from vina.functiontools import CrossEntropy, MSE, CrossEntropyV2
 from torchvision.datasets import MNIST
 import numpy as np
 
