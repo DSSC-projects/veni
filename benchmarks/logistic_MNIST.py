@@ -1,23 +1,20 @@
 #! /usr/bin/python3
 
 import logging
-import os, sys
+import sys
 
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+sys.path.append('../')
 
 import jax 
 import jax.numpy as jnp
 from jax import grad, jvp
 jax.config.update('jax_platform_name', 'cpu')
 
-from jax_forward.net import Module, Sequential, Linear
-from jax_forward.function import Sigmoid
-from jax_forward.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
-from jax_forward.functiontools import CrossEntropy
-from jax_forward.optim import SGD
+from vina.net import Module, Sequential, Linear
+from vina.function import Sigmoid
+from vina.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
+from vina.functiontools import CrossEntropy
+from vina.optim import SGD
 from torchvision.datasets import MNIST
 import numpy as np
 
