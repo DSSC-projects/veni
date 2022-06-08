@@ -1,4 +1,4 @@
-# JaxForward
+# VENI
 
 A neural network package using forward automatic differentiation based on JAX.
 
@@ -18,10 +18,10 @@ A neural network package using forward automatic differentiation based on JAX.
 * [License](#license)
 
 ## Description
-**JaxForward** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
+**VENI** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
 
 ## Dependencies and installation
-**JaxForward** requires requires `jax`, `jaxlib`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
+**VENI** requires requires `jax`, `jaxlib`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
 
 ### Installing from source
 The official distribution is on GitHub, and you can clone the repository using
@@ -56,10 +56,10 @@ To install the package just type:
 <!-- ``` -->
 
 ## Examples and Tutorials
-The directory `Examples` contains some examples showing how to use **JaxForward**.
+The directory `Examples` contains some examples showing how to use **VENI**.
 
 ## Benchmarks
-The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **JaxForward** interface. We further provide logs for efficient analysis of the data.
+The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data.
 
 ### References
 To implement the package we follow these works:
@@ -72,13 +72,13 @@ gradient descent. In International Conference on Learning Representations, 2022
 
 
 ## Authors and contributors
-**JaxForward** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
+**VENI** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
 * [Francesco Tomba](mailto:francesco.tomba17@gmail.com)
 * [Dario Coscia](mailto:dariocos99@gmail.com)
 * [Alessandro Pierro](mailto:pierro@vision-e.it)
 
 
-Contact us by email for further information or questions about **JaxForward**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
+Contact us by email for further information or questions about **VENI**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
 
 
 ## How to contribute
