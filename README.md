@@ -1,10 +1,10 @@
-# VENI
-
 <p align="center">
   <a href="https://github.com/DSSC-projects/DL-project/blob/main" target="_blank" >
-    <img alt="VENI" src="imglogo.png" width="200" />
+    <img alt="VENI" src="imglogo.png" width="300" />
   </a>
 </p>
+
+# VENI
 
 A Python package for deep learning using forward automatic differentiation based on JAX.
 
