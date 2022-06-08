@@ -2,8 +2,12 @@
 
 from operator import getitem
 import os, sys
-sys.path.append('../')
-sys.path.append('/home/francesco/Desktop/dssc/deeplearning/proj/DL-project')
+
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 import jax 
 import jax.numpy as jnp
 from jax import grad, jvp
