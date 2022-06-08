@@ -1,6 +1,12 @@
 # VENI
 
-A neural network package using forward automatic differentiation based on JAX.
+<p align="center">
+  <a href="http://mathlab.github.io/PyDMD/" target="_blank" >
+    <img alt="Python Dynamic Mode Decomposition" src="readme/logo_PyDMD.png" width="200" />
+  </a>
+</p>
+
+A Python package for deep learning using forward automatic differentiation based on JAX.
 
 ## Table of contents
 * [Description](#description)
