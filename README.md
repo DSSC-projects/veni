@@ -54,26 +54,25 @@ To install the package just type:
 <!-- ``` -->
 
 ## Examples and Tutorials
-The directory `Examples` contains some examples showing Poisson and Burgers problems solved in the PINN context.
+The directory `Examples` contains some examples showing how to use **JaxForward**.
 
 ### References
 To implement the package we follow these works:
 
-* Raissi, Maziar, Paris Perdikaris, and George E. Karniadakis.
-  *Physics-informed neural networks: A deep learning framework for solving
-  forward and inverse problems involving nonlinear partial differential
-  equations.* Journal of Computational Physics 378 (2019): 686-707.
+* A. G. Baydin, B. A. Pearlmutter, D. Syme, F. Wood, and P. Torr. _Gradients without back-
+propagation, 2022
+* D. Silver, A. Goyal, I. Danihelka, M. Hessel, and H. van Hasselt. _Learning by directional
+gradient descent. In International Conference on Learning Representations, 2022
 
 
 ## Authors and contributors
-**PINA** is currently developed and mantained at [SISSA mathLab](http://mathlab.sissa.it/) by
-* [Nicola Demo](mailto:demo.nicola@gmail.com)
-* [Maria Strazzullo](mailto:mstrazzu@gmail.com)
+**JaxForward** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:>
+* [Francesco Tomba](mailto:francesco.tomba17@gmail.com)
+* [Dario Coscia](mailto:dariocos99@gmail.com)
+* [Alessandro Pierro](mailto:pierro@vision-e.it)
 
 
-under the supervision of [Prof. Gianluigi Rozza](mailto:gianluigi.rozza@sissa.it).
-
-Contact us by email for further information or questions about **PINA**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
+Contact us by email for further information or questions about **JaxForward**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
 
 
 ## How to contribute
