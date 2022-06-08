@@ -2,6 +2,7 @@
 
 import logging
 import sys
+import os
 
 sys.path.append('../')
 
@@ -120,28 +121,25 @@ def evaluatePerf(gen):
         count += x.shape[0]
     return acc/count
 
-#for epoch in range(num_epochs):
-#    running_loss = 0
-#    for i, (image, label) in enumerate(train_generator):
-#        one_hot_label = one_hot(label, n_targets)
-#        g = grad(loss)(params,image, one_hot_label)
-#        params = optimizer.update(params,g)
-#        # loss info
-#       # update_bwd(params, image, one_hot_label)
-#        loss_item =  loss(params, image, one_hot_label)
-#        running_loss = running_loss + loss_item
-#        if i % logging_freq == logging_freq - 1:
-#            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
-#            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
-#            running_loss = 0.0  
-#
-#
+for epoch in range(num_epochs):
+    running_loss = 0
+    for i, (image, label) in enumerate(train_generator):
+        one_hot_label = one_hot(label, n_targets)
+        g = grad(loss)(params,image, one_hot_label)
+        params = optimizer.update(params,g)
+        # loss info
+        update_bwd(params, image, one_hot_label)
+        loss_item =  loss(params, image, one_hot_label)
+        running_loss = running_loss + loss_item
+        if i % logging_freq == logging_freq - 1:
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / logging_freq:.3f}')
+            bwd_file.write(f'{epoch + 1},{i + 1},{running_loss / logging_freq}\n')
+            running_loss = 0.0  
+
+
 ##model assessment
-#
-#print(f"Training set accuracy {evaluatePerf(train_generator)}")
-#
-#
-#print(f"Training set accuracy {evaluatePerf(test_generator)}")
+print(f"Training set accuracy {evaluatePerf(train_generator)}")
+print(f"Training set accuracy {evaluatePerf(test_generator)}")
 
 def get_vector(params):
     v_shaped = []
@@ -169,10 +167,6 @@ for epoch in range(num_epochs):
     for i, (image, label) in enumerate(train_generator):
         key, _ = jax.random.split(key)
         one_hot_label = one_hot(label, n_targets)
-       # v = _get_vector(key,params)
-       # _ , proj = jvp(lambda p: loss(p,image,one_hot_label), (params, ), (v,) )
-       # # loss info
-       # params = optimizer.update(params, v, scale = proj)
         step_size = 2e-4
         params = update_fwd(params, image, one_hot_label)
         loss_item =  loss(params, image, one_hot_label)
