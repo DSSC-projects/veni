@@ -1,49 +1,123 @@
-# Gradients without backpropagation
+**JaxForward**: JAX neural network using forward automatic differentiation.
 
-## Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://gitlab.com/-/experiment/new_project_readme_content:77987b9d68d826b4efe16fa43af21a8f?https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
+## Table of contents
+* [Description](#description)
+* [Dependencies and installation](#dependencies-and-installation)
+	* [Installing via PIP](#installing-via-pip)
+	* [Installing from source](#installing-from-source)
+<!-- * [Documentation](#documentation) -->
+<!-- * [Testing](#testing) -->
+* [Examples and Tutorials](#examples-and-tutorials)
+* [References](#references)
+	<!-- * [Recent works with PyDMD](#recent-works-with-pydmd) -->
+* [Authors and contributors](#authors-and-contributors)
+* [How to contribute](#how-to-contribute)
+	* [Submitting a patch](#submitting-a-patch)
+* [License](#license)
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**JaxForward** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## Dependencies and installation
+**PINA** requires requires `jax`, `jaxlib`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Installing from source
+The official distribution is on GitHub, and you can clone the repository using
+```bash
+> git clone ...
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+To install the package just type:
+```bash
+> pip install -e .
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+<!-- ## Documentation -->
+<!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+<!-- ```bash -->
+<!-- > cd docs -->
+<!-- > make html -->
+<!-- ``` -->
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+<!-- The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse. -->
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+<!-- ## Testing -->
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+<!-- We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyDMD). -->
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+<!-- To run tests locally (`pytest` is required): -->
+
+<!-- ```bash -->
+<!-- > pytest -->
+<!-- ``` -->
+
+## Examples and Tutorials
+The directory `Examples` contains some examples showing Poisson and Burgers problems solved in the PINN context.
+
+### References
+To implement the package we follow these works:
+
+* Raissi, Maziar, Paris Perdikaris, and George E. Karniadakis.
+  *Physics-informed neural networks: A deep learning framework for solving
+  forward and inverse problems involving nonlinear partial differential
+  equations.* Journal of Computational Physics 378 (2019): 686-707.
+
+
+## Authors and contributors
+**PINA** is currently developed and mantained at [SISSA mathLab](http://mathlab.sissa.it/) by
+* [Nicola Demo](mailto:demo.nicola@gmail.com)
+* [Maria Strazzullo](mailto:mstrazzu@gmail.com)
+
+
+under the supervision of [Prof. Gianluigi Rozza](mailto:gianluigi.rozza@sissa.it).
+
+Contact us by email for further information or questions about **PINA**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
+
+
+## How to contribute
+We'd love to accept your patches and contributions to this project. There are just a few small guidelines you need to follow.
+
+### Submitting a patch
+
+  1. It's generally best to start by opening a new issue describing the bug or
+     feature you're intending to fix.  Even if you think it's relatively minor,
+     it's helpful to know what people are working on.  Mention in the initial
+     issue that you are planning to work on that bug or feature so that it can
+     be assigned to you.
+
+  2. Follow the normal process of [forking][] the project, and setup a new
+     branch to work in.  It's important that each group of changes be done in
+     separate branches in order to ensure that a pull request only includes the
+     commits related to that bug or feature.
+
+  3. To ensure properly formatted code, please make sure to use 4
+     spaces to indent the code. The easy way is to run on your bash the provided
+     script: ./code_formatter.sh. You should also run [pylint][] over your code.
+     It's not strictly necessary that your code be completely "lint-free",
+     but this will help you find common style issues.
+
+  4. Any significant changes should almost always be accompanied by tests.  The
+     project already has good test coverage, so look at some of the existing
+     tests if you're unsure how to go about it. We're using [coveralls][] that
+     is an invaluable tools for seeing which parts of your code aren't being
+     exercised by your tests.
+
+  5. Do your best to have [well-formed commit messages][] for each change.
+     This provides consistency throughout the project, and ensures that commit
+     messages are able to be formatted properly by various git tools.
+
+  6. Finally, push the commits to your fork and submit a [pull request][]. Please,
+     remember to rebase properly in order to maintain a clean, linear git history.
+
+[forking]: https://help.github.com/articles/fork-a-repo
+[pylint]: https://www.pylint.org/
+[coveralls]: https://coveralls.io
+[well-formed commit messages]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[pull request]: https://help.github.com/articles/creating-a-pull-request
+
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-
+See the [LICENSE](LICENSE.rst) file for license rights and limitations (MIT).
