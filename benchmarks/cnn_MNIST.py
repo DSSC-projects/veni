@@ -1,12 +1,9 @@
 #! /usr/bin/python3
 
 from operator import getitem
-import os, sys
+import sys
 
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+sys.path.append('../')
 
 import jax 
 import jax.numpy as jnp
