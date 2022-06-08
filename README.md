@@ -62,7 +62,7 @@ To install the package just type:
 <!-- ``` -->
 
 ## Examples and Tutorials
-The directory `Examples` contains some examples showing how to use **VENI**.
+The directory `examples` contains some examples showing how to use **VENI**.
 
 ## Benchmarks
 The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data.
