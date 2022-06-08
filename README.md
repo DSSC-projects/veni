@@ -7,6 +7,7 @@
 <!-- * [Documentation](#documentation) -->
 <!-- * [Testing](#testing) -->
 * [Examples and Tutorials](#examples-and-tutorials)
+* * [Benchmarks](#benchmarks)
 * [References](#references)
 	<!-- * [Recent works with PyDMD](#recent-works-with-pydmd) -->
 * [Authors and contributors](#authors-and-contributors)
@@ -54,6 +55,9 @@ To install the package just type:
 
 ## Examples and Tutorials
 The directory `Examples` contains some examples showing how to use **JaxForward**.
+
+## Benchmarks
+The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **JaxForward** interface. We further provides logs for efficient later analysis of the data.
 
 ### References
 To implement the package we follow these works:
