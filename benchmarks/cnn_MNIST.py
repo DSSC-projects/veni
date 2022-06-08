@@ -2,6 +2,7 @@
 
 from operator import getitem
 import sys
+import os
 
 sys.path.append('../')
 
