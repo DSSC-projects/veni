@@ -3,7 +3,6 @@
 ## Table of contents
 * [Description](#description)
 * [Dependencies and installation](#dependencies-and-installation)
-	* [Installing via PIP](#installing-via-pip)
 	* [Installing from source](#installing-from-source)
 <!-- * [Documentation](#documentation) -->
 <!-- * [Testing](#testing) -->
@@ -19,7 +18,7 @@
 **JaxForward** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
 
 ## Dependencies and installation
-**PINA** requires requires `jax`, `jaxlib`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
+**JaxForward** requires requires `jax`, `jaxlib`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
 
 ### Installing from source
 The official distribution is on GitHub, and you can clone the repository using
