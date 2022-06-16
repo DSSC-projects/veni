@@ -5,7 +5,7 @@ from .module import Optimizer
 
 class SGD(Optimizer):
 
-    def __init__(self, params, momentum=0, dampening=0, eta=1e-3, nestereov=False):
+    def __init__(self, params, momentum=0, dampening=0, eta=1e-3):
         """Implements stochastic gradient descent (optionally with momentum).
 
         :param params: paramters to optimize
@@ -16,16 +16,17 @@ class SGD(Optimizer):
         :type dampening: int, optional
         :param eta:  learning rate, defaults to 1e-3
         :type eta: float, optional
-        :param nestereov: enables Nesterov momentum, defaults to False
-        :type nestereov: bool, optional
         """
         self.params = params
         self.momentum = momentum
         self.dampening = dampening
         self.eta = eta
-        self.nesterov = nestereov
         self.prev_grad = None
-        self.t = 0
+
+    def _update(self, grad, prev_grad):
+        return [(self.momentum * pgw + (1 - self.dampening)*gw,
+                 self.momentum * pgb + (1 - self.dampening)*gb)
+                for ((gw, gb), (pgw, pgb)) in zip(grad, prev_grad)]
 
     def update(self, params, grad):
         """Update method for SGD
@@ -38,20 +39,12 @@ class SGD(Optimizer):
         :rtype: jax.array
         """
         if self.momentum != 0:
-            if self.t == 0:
-                self.b = grad
+            if self.prev_grad is None:
+                self.prev_grad = grad
             else:
-                self.b = [self.momentum * b + (1 - self.dampening) * g
-                          for (b, g) in zip(self.b, grad)]
+                grad = self._update(grad, self.prev_grad)
+                self.prev_grad = grad
 
-            if self.nesterov and self.t > 0:
-                grad = [prev_grad + self.momentum * b
-                        for (b, prev_grad) in zip(self.b, self.prev_grad)]
-            else:
-                grad = self.b
-
-        self.prev_grad = grad
-        self.t += 1
         return [(w - self.eta * dw, b - self.eta * db)
                 for (w, b), (dw, db) in zip(params, grad)]
 
@@ -77,8 +70,8 @@ class Adam(Optimizer):
         self.eta = eta
         self.tolerance = 1e-8
         self.t = 0
-        self.m = [0 for _ in range(len(params)*2)]
-        self.v = [0 for _ in range(len(params)*2)]
+        self.m = [[0, 0] for _ in range(len(params))]
+        self.v = [[0, 0] for _ in range(len(params))]
 
     def _single_update(self, grad, m, v):
         m = self.beta1 * m + (1. - self.beta1) * grad
@@ -102,11 +95,11 @@ class Adam(Optimizer):
         update_list = []
         for i, ((w, b), (dw, db)) in enumerate(zip(params, grads)):
 
-            dw, self.m[i], self.v[i] = self._single_update(
-                self, dw, self.m[i], self.v[i])
+            dw, self.m[i][0], self.v[i][0] = self._single_update(
+                dw, self.m[i][0], self.v[i][0])
 
-            db, self.m[i + 1], self.v[i + 1] = self._single_update(
-                self, dw, self.m[i + 1], self.v[i + 1])
+            db, self.m[i][1], self.v[i][1] = self._single_update(
+                db, self.m[i][1], self.v[i][1])
 
             update_list.append((w - self.eta * dw, b - self.eta * db))
 
