@@ -1,4 +1,6 @@
+from jax.tree_util import tree_map
 import jax
+from jax import partial, jit
 import jax.numpy as jnp
 from .module import Optimizer
 
@@ -23,11 +25,13 @@ class SGD(Optimizer):
         self.eta = eta
         self.prev_grad = None
 
+    @partial(jit, static_argnums=(0,))
     def _update(self, grad, prev_grad):
         return [(self.momentum * pgw + (1 - self.dampening)*gw,
                  self.momentum * pgb + (1 - self.dampening)*gb)
                 for ((gw, gb), (pgw, pgb)) in zip(grad, prev_grad)]
 
+    @partial(jit, static_argnums=(0,))
     def update(self, params, grad):
         """Update method for SGD
 
@@ -73,6 +77,7 @@ class Adam(Optimizer):
         self.m = [[0, 0] for _ in range(len(params))]
         self.v = [[0, 0] for _ in range(len(params))]
 
+    @partial(jit, static_argnums=(0,))
     def _single_update(self, grad, m, v):
         m = self.beta1 * m + (1. - self.beta1) * grad
         v = self.beta2 * v + (1. - self.beta2) * grad ** 2
@@ -81,6 +86,7 @@ class Adam(Optimizer):
         update_coeff = m_hat / (jnp.sqrt(v_hat) + self.tolerance)
         return update_coeff, m, v
 
+    @partial(jit, static_argnums=(0,))
     def update(self, params, grads):
         """Update method for Adam
 
@@ -104,3 +110,73 @@ class Adam(Optimizer):
             update_list.append((w - self.eta * dw, b - self.eta * db))
 
         return update_list
+
+
+jax.config.update('jax_platform_name', 'cpu')
+
+
+class NormalLikeSampler():
+    def __init__(self, key=None):
+        """Sampler for sampling from a N(0,1) distribution
+
+        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
+        :type key: jax.random.PRNGKey, optional
+        """
+        if key == None:
+            from time import time_ns
+            self._key = jax.random.PRNGKey(time_ns())
+
+    def normal_like(self, arr):
+        self._key, _ = jax.random.split(self._key)
+        return jax.random.normal(self._key, arr.shape)
+
+    def __call__(self, arr):
+        return(self.normal_like(arr))
+
+
+def plist_reduce(vs, js):
+    res = []
+    how_many_vs = len(vs)
+    len_v = len(vs[0])
+
+    for j in range(len_v):
+        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
+        for i in range(how_many_vs):
+            w += js[i] * vs[i][j][0]
+            b += js[i] * vs[i][j][1]
+
+        res.append((w, b))
+
+    return res
+
+
+def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):
+    """Function to calculate the gradient in forward mode using 1 or more directions
+
+    :param params: Parameters of the model
+    :type params: List
+    :param x: Input of the model
+    :type x: jnp.array
+    :param y: labels
+    :type y: jnp.array
+    :param loss: loss function
+    :type loss: Callable
+    :param dirs: Number of directions used to calculate the gradient, defaults to 1
+    :type dirs: int, optional
+    :param sampler: Sampler used to sample gradient direction for each layer, defaults to NormalLikeSampler()
+    :type sampler: Class, optional
+    :return: Gradient as list of all components for each layer
+    :rtype: List
+    """
+
+    if dirs == 1:
+        v = tree_map(sampler, params)
+        _, j = jax.jvp(lambda p: loss(p, x, y), (params, ), (v,))
+        return tree_map(lambda a: jnp.dot(a, j), v)
+
+    else:
+        vs = [tree_map(sampler, params) for _ in range(dirs)]
+        js = [jax.jvp(lambda p: loss(p, x, y), (params, ), (v,))[1]
+              for v in vs]
+
+        return plist_reduce(vs, js)
