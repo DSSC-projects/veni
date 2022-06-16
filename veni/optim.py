@@ -1,6 +1,5 @@
 from jax.tree_util import tree_map
 import jax
-from jax import partial, jit
 import jax.numpy as jnp
 from .module import Optimizer
 
@@ -25,13 +24,11 @@ class SGD(Optimizer):
         self.eta = eta
         self.prev_grad = None
 
-    @partial(jit, static_argnums=(0,))
     def _update(self, grad, prev_grad):
         return [(self.momentum * pgw + (1 - self.dampening)*gw,
                  self.momentum * pgb + (1 - self.dampening)*gb)
                 for ((gw, gb), (pgw, pgb)) in zip(grad, prev_grad)]
 
-    @partial(jit, static_argnums=(0,))
     def update(self, params, grad):
         """Update method for SGD
 
@@ -77,7 +74,6 @@ class Adam(Optimizer):
         self.m = [[0, 0] for _ in range(len(params))]
         self.v = [[0, 0] for _ in range(len(params))]
 
-    @partial(jit, static_argnums=(0,))
     def _single_update(self, grad, m, v):
         m = self.beta1 * m + (1. - self.beta1) * grad
         v = self.beta2 * v + (1. - self.beta2) * grad ** 2
@@ -86,7 +82,6 @@ class Adam(Optimizer):
         update_coeff = m_hat / (jnp.sqrt(v_hat) + self.tolerance)
         return update_coeff, m, v
 
-    @partial(jit, static_argnums=(0,))
     def update(self, params, grads):
         """Update method for Adam
 
