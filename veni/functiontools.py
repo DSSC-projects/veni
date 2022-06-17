@@ -83,8 +83,7 @@ def _sigmoid(x):
     :return: sigmoid on x
     :rtype: jax.array
     """
-    return  1. / (jnp.exp(-x) + 1.)
-    
+    return 1. / (jnp.exp(-x) + 1.)
 
 
 def sigmoid(x):
@@ -196,8 +195,8 @@ def _log_softmax(x):
     :return: logarithmic softmax on x
     :rtype: jax.array
     """
-    xx = - jnp.log(jnp.sum(jnp.exp(x))) 
-    return x + xx 
+    xx = - jnp.log(jnp.sum(jnp.exp(x)))
+    return x + xx
 
 
 def log_softmax(x):
@@ -211,10 +210,14 @@ def log_softmax(x):
     f = vmap(_log_softmax)
     return f(x)
 
-#### LOSSES
+# LOSSES
 
-def CrossEntropy(y,y_hat):
+
+def LazyCrossEntropy(y, y_hat):
     """CrossEntropy loss
+    This cross entropy implementationmay suffer numerical instabilities
+    depending on the specific problem, consider using 'CrossEntropy'.
+
     EXPECTS: tensor of the shape (N, k1, k2, ..., kn)
     where N is the number of examples in the batch
 
@@ -228,7 +231,8 @@ def CrossEntropy(y,y_hat):
     """
     return jnp.sum(-y*jnp.log(y_hat))/y.shape[0]
 
-def CrossEntropyV2(y,y_hat):
+
+def CrossEntropy(y, y_hat):
     """CrossEntropy loss
     EXPECTS: tensor of the shape (N, k1, k2, ..., kn)
     where N is the number of examples in the batch
@@ -243,10 +247,12 @@ def CrossEntropyV2(y,y_hat):
     """
     logprobs = jnp.log(y_hat)
     target_class = jnp.argmax(y, axis=1)
-    nll = jnp.take_along_axis(logprobs, jnp.expand_dims(target_class, axis=1), axis=1)
+    nll = jnp.take_along_axis(
+        logprobs, jnp.expand_dims(target_class, axis=1), axis=1)
     ce = -jnp.mean(nll)
     return ce
 
-def MSE(y,y_hat):
 
-    return jnp.sum( (y - y_hat)**2)/y.shape[0]
+def MSE(y, y_hat):
+
+    return jnp.sum((y - y_hat)**2)/y.shape[0]
