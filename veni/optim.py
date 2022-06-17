@@ -145,6 +145,79 @@ def plist_reduce(vs, js):
     return res
 
 
+class RademacherLikeSampler():
+    def __init__(self, key=None):
+        """Sampler for sampling from a Rademacher distribution
+
+        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
+        :type key: jax.random.PRNGKey, optional
+        """
+        if key == None:
+            from time import time_ns
+            self._key = jax.random.PRNGKey(time_ns())
+
+    def rademacher_like(self, arr):
+        self._key, _ = jax.random.split(self._key)
+        return jax.random.rademacher(self._key, arr.shape, dtype='float32')
+
+    def __call__(self, arr):
+        return(self.rademacher_like(arr))
+
+
+def plist_reduce(vs, js):
+    res = []
+    how_many_vs = len(vs)
+    len_v = len(vs[0])
+
+    for j in range(len_v):
+        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
+        for i in range(how_many_vs):
+            w += js[i] * vs[i][j][0]
+            b += js[i] * vs[i][j][1]
+
+        res.append((w, b))
+
+    return res
+
+
+class TruncatedNormalLikeSampler():
+    def __init__(self, lower=-1, upper=1, key=None):
+        """Sampler for sampling from a Rademacher distribution
+
+        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
+        :type key: jax.random.PRNGKey, optional
+        """
+        if key == None:
+            from time import time_ns
+            self._key = jax.random.PRNGKey(time_ns())
+        self.lower = lower
+        self.upper = upper
+
+    def truncnormal_like(self, arr):
+        self._key, _ = jax.random.split(self._key)
+        return jax.random.truncated_normal(self._key, self.lower, self.upper,
+                                           arr.shape, dtype='float32')
+
+    def __call__(self, arr):
+        return(self.truncnormal(arr))
+
+
+def plist_reduce(vs, js):
+    res = []
+    how_many_vs = len(vs)
+    len_v = len(vs[0])
+
+    for j in range(len_v):
+        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
+        for i in range(how_many_vs):
+            w += js[i] * vs[i][j][0]
+            b += js[i] * vs[i][j][1]
+
+        res.append((w, b))
+
+    return res
+
+
 def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):
     """Function to calculate the gradient in forward mode using 1 or more directions
 
