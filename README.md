@@ -58,10 +58,10 @@ You can also install it using pip via
 <!-- ``` -->
 
 ## Examples and Tutorials
-The directory `examples` contains some examples showing how to use **VENI**.
+The directory `examples` contains some examples showing how to use **VENI**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
 
 ## Benchmarks
-The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data.
+The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data. Further benchmark involving directions and optimizers are also available for testing.
 
 ### References
 To implement the package we follow these works:
@@ -118,6 +118,7 @@ We'd love to accept your patches and contributions to this project. There are ju
 [well-formed commit messages]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 [pull request]: https://help.github.com/articles/creating-a-pull-request
 
+## Citations
 
 ## License
 
