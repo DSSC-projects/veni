@@ -30,7 +30,11 @@ A Python package for deep learning using forward automatic differentiation based
 ### Installing from source
 The official distribution is on GitHub, and you can clone the repository using
 ```bash
-> git clone ...
+> git clone https://github.com/DSSC-projects/VENI
+```
+You can also install it using pip via
+```bash
+> python -m pip install git+https://github.com/DSSC-projects/VENI
 ```
 <!-- ## Documentation -->
 <!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
