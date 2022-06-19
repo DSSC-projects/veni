@@ -1,8 +1,8 @@
 <p align="center">
-    <img alt="VENI" src="imglogo.png" width="300" />
+    <img alt="veni" src="imglogo.png" width="300" />
 </p>
 
-# VENI
+# veni
 
 A Python package for deep learning using forward automatic differentiation based on JAX.
 
@@ -22,19 +22,19 @@ A Python package for deep learning using forward automatic differentiation based
 * [License](#license)
 
 ## Description
-**VENI** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
+**veni** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
 
 ## Dependencies and installation
-**VENI** requires requires `jax`, `jaxlib`, `torch`, `numpy`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
+**veni** requires requires `jax`, `jaxlib`, `torch`, `numpy`, `sphinx` (for the documentation). The code is tested for Python 3, while compatibility of Python 2 is not guaranteed anymore. It can be installed directly from the source code.
 
 ### Installing from source
 The official distribution is on GitHub, and you can clone the repository using
 ```bash
-> git clone https://github.com/DSSC-projects/VENI
+> git clone https://github.com/DSSC-projects/veni
 ```
 You can also install it using pip via
 ```bash
-> python -m pip install git+https://github.com/DSSC-projects/VENI
+> python -m pip install git+https://github.com/DSSC-projects/veni
 ```
 <!-- ## Documentation -->
 <!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
