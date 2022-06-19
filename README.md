@@ -2,6 +2,10 @@
     <img alt="veni" src="imglogo.png" width="300" />
 </p>
 
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
+<img src='https://img.shields.io/badge/Code%20style-Black-%23000000'/>
+[![Documentation Status](https://veni.readthedocs.io/en/latest/)](https://veni.readthedocs.io/en/latest/badge=latest)
+
 # veni
 
 A Python package for deep learning using forward automatic differentiation based on JAX.
