@@ -3,8 +3,7 @@
 </p>
 
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
-<img src='https://img.shields.io/badge/Code%20style-Black-%23000000'/>
-[![Documentation Status](https://veni.readthedocs.io/en/latest/)](https://veni.readthedocs.io/en/latest/badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/veni/badge/?version=latest)](https://veni.readthedocs.io/en/latest/?badge=latest)
 
 # veni
 
