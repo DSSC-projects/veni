@@ -124,48 +124,52 @@ def plist_reduce(vs, js):
 
 
 class NormalLikeSampler(Sampler):
-    def __init__(self):
+    def __init__(self, key=None):
         """Sampler for sampling from a N(0,1) distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super().__init__()
+        super(NormalLikeSampler, self).__init__(key)
+        print(self._key)
 
     def forward(self, arr):
+        sample = jax.random.normal(self._key, arr.shape)
         self._key, _ = jax.random.split(self._key)
-        return jax.random.normal(self._key, arr.shape)
+        return sample
 
 
 class RademacherLikeSampler(Sampler):
-    def __init__(self):
+    def __init__(self, key=None):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super().__init__()
+        super().__init__(key)
 
     def forward(self, arr):
+        sample = jax.random.rademacher(self._key, arr.shape, dtype='float32')
         self._key, _ = jax.random.split(self._key)
-        return jax.random.rademacher(self._key, arr.shape, dtype='float32')
+        return sample
 
 
 class TruncatedNormalLikeSampler(Sampler):
-    def __init__(self, lower=-1, upper=1):
+    def __init__(self, key=None, lower=-1, upper=1):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super().__init__()
+        super().__init__(key)
         self.lower = lower
         self.upper = upper
 
     def forward(self, arr):
+        sample = jax.random.truncated_normal(self._key, self.lower, self.upper,
+                                             arr.shape, dtype='float32')
         self._key, _ = jax.random.split(self._key)
-        return jax.random.truncated_normal(self._key, self.lower, self.upper,
-                                           arr.shape, dtype='float32')
+        return sample
 
 
 def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):

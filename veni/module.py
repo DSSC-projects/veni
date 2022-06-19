@@ -48,6 +48,8 @@ class Sampler(abc.ABC):
         if key is None:
             from time import time_ns
             self._key = jax.random.PRNGKey(time_ns())
+        else:
+            self._key = key
 
     @abc.abstractmethod
     def forward(self, arr):
