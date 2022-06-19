@@ -2,9 +2,9 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'veni'
+copyright = '2022, Dario Coscia, Alessandro Pierro, Francesco Tomba'
+author = 'Dario Coscia, Alessandro Pierro, Francesco Tomba'
 
 release = '0.1'
 version = '0.1.0'
