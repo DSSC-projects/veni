@@ -1,13 +1,8 @@
-Welcome to Lumache's documentation!
+Welcome to veni documentation!
 ===================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+**veni** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of Atılım Günes Baydin et al. and David Silver et al., we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
 
 .. note::
 
