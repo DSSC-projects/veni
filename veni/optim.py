@@ -1,7 +1,7 @@
 from jax.tree_util import tree_map
 import jax
 import jax.numpy as jnp
-from .module import Optimizer
+from .module import Optimizer, Sampler
 
 
 class SGD(Optimizer):
@@ -107,115 +107,65 @@ class Adam(Optimizer):
         return update_list
 
 
-jax.config.update('jax_platform_name', 'cpu')
+def plist_reduce(vs, js):
+    res = []
+    how_many_vs = len(vs)
+    len_v = len(vs[0])
+
+    for j in range(len_v):
+        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
+        for i in range(how_many_vs):
+            w += js[i] * vs[i][j][0]
+            b += js[i] * vs[i][j][1]
+
+        res.append((w, b))
+
+    return res
 
 
-class NormalLikeSampler():
-    def __init__(self, key=None):
+class NormalLikeSampler(Sampler):
+    def __init__(self):
         """Sampler for sampling from a N(0,1) distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        if key == None:
-            from time import time_ns
-            self._key = jax.random.PRNGKey(time_ns())
+        super().__init__()
 
-    def normal_like(self, arr):
+    def forward(self, arr):
         self._key, _ = jax.random.split(self._key)
         return jax.random.normal(self._key, arr.shape)
 
-    def __call__(self, arr):
-        return(self.normal_like(arr))
 
-
-def plist_reduce(vs, js):
-    res = []
-    how_many_vs = len(vs)
-    len_v = len(vs[0])
-
-    for j in range(len_v):
-        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
-        for i in range(how_many_vs):
-            w += js[i] * vs[i][j][0]
-            b += js[i] * vs[i][j][1]
-
-        res.append((w, b))
-
-    return res
-
-
-class RademacherLikeSampler():
-    def __init__(self, key=None):
+class RademacherLikeSampler(Sampler):
+    def __init__(self):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        if key == None:
-            from time import time_ns
-            self._key = jax.random.PRNGKey(time_ns())
+        super().__init__()
 
-    def rademacher_like(self, arr):
+    def forward(self, arr):
         self._key, _ = jax.random.split(self._key)
         return jax.random.rademacher(self._key, arr.shape, dtype='float32')
 
-    def __call__(self, arr):
-        return(self.rademacher_like(arr))
 
-
-def plist_reduce(vs, js):
-    res = []
-    how_many_vs = len(vs)
-    len_v = len(vs[0])
-
-    for j in range(len_v):
-        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
-        for i in range(how_many_vs):
-            w += js[i] * vs[i][j][0]
-            b += js[i] * vs[i][j][1]
-
-        res.append((w, b))
-
-    return res
-
-
-class TruncatedNormalLikeSampler():
-    def __init__(self, lower=-1, upper=1, key=None):
+class TruncatedNormalLikeSampler(Sampler):
+    def __init__(self, lower=-1, upper=1):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        if key == None:
-            from time import time_ns
-            self._key = jax.random.PRNGKey(time_ns())
+        super().__init__()
         self.lower = lower
         self.upper = upper
 
-    def truncnormal_like(self, arr):
+    def forward(self, arr):
         self._key, _ = jax.random.split(self._key)
         return jax.random.truncated_normal(self._key, self.lower, self.upper,
                                            arr.shape, dtype='float32')
-
-    def __call__(self, arr):
-        return(self.truncnormal(arr))
-
-
-def plist_reduce(vs, js):
-    res = []
-    how_many_vs = len(vs)
-    len_v = len(vs[0])
-
-    for j in range(len_v):
-        w, b = jnp.zeros_like(vs[0][j][0]), jnp.zeros_like(vs[0][j][1])
-        for i in range(how_many_vs):
-            w += js[i] * vs[i][j][0]
-            b += js[i] * vs[i][j][1]
-
-        res.append((w, b))
-
-    return res
 
 
 def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):

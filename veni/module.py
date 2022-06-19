@@ -1,5 +1,6 @@
 import abc
 import jax.numpy as jnp
+import jax
 
 
 class Module(abc.ABC):
@@ -35,9 +36,22 @@ class Optimizer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update(self,params,grad):
+    def update(self, params, grad):
         pass
-
 
     def __call__(self, params, grad):
         return self.update(params, grad)
+
+
+class Sampler(abc.ABC):
+    def __init__(self, key=None):
+        if key is None:
+            from time import time_ns
+            self._key = jax.random.PRNGKey(time_ns())
+
+    @abc.abstractmethod
+    def forward(self, arr):
+        pass
+
+    def __call__(self, arr):
+        return self.forward(arr)
