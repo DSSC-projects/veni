@@ -74,7 +74,7 @@ gradient descent. In International Conference on Learning Representations, 2022
 
 
 ## Authors and contributors
-**VENI** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
+**veni** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
 * [Francesco Tomba](mailto:francesco.tomba17@gmail.com)
 * [Dario Coscia](https://github.com/dario-coscia)
 * [Alessandro Pierro](https://github.com/AlessandroPierro)
