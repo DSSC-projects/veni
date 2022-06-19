@@ -254,5 +254,13 @@ def CrossEntropy(y, y_hat):
 
 
 def MSE(y, y_hat):
+    """Mean square error loss, reduction mean
 
+    :param y: Ground truth tensor
+    :type y: jnp.array
+    :param y_hat: Model predictions
+    :type y_hat: jnp.array
+    :return: Loss for each batch
+    :rtype: float
+    """
     return jnp.sum((y - y_hat)**2)/y.shape[0]
