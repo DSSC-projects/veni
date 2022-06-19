@@ -145,7 +145,7 @@ class RademacherLikeSampler(Sampler):
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super().__init__(key)
+        super(RademacherLikeSampler, self).__init__(key)
 
     def forward(self, arr):
         sample = jax.random.rademacher(self._key, arr.shape, dtype='float32')
@@ -160,7 +160,7 @@ class TruncatedNormalLikeSampler(Sampler):
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super().__init__(key)
+        super(TruncatedNormalLikeSampler, self).__init__(key)
         self.lower = lower
         self.upper = upper
 
