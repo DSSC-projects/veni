@@ -131,7 +131,6 @@ class NormalLikeSampler(Sampler):
         :type key: jax.random.PRNGKey, optional
         """
         super(NormalLikeSampler, self).__init__(key)
-        print(self._key)
 
     def forward(self, arr):
         sample = jax.random.normal(self._key, arr.shape)
