@@ -1,7 +1,7 @@
 from setuptools import setup
 
 meta = {}
-with open("./veni/meta.py") as fp:
+with open("veni/meta.py") as fp:
     exec(fp.read(), meta)
 
 # Package meta-data.
@@ -31,7 +31,6 @@ setup(
     description=DESCRIPTION,
     long_description=LDESCRIPTION,
     author=AUTHOR,
-    author_email=MAIL,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: MIT License',
