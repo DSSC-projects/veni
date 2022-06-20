@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 meta = {}
-with open("veni/meta.py") as fp:
+with open("./veni/meta.py") as fp:
     exec(fp.read(), meta)
 
 # Package meta-data.
