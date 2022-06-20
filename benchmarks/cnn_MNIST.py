@@ -9,7 +9,6 @@ sys.path.append('../')
 import jax 
 import jax.numpy as jnp
 from jax import grad, jvp
-jax.config.update('jax_platform_name', 'cpu')
 
 from veni.net import Module, Sequential, Linear, Conv2D, MaxPool2D, Flatten
 from veni.function import Sigmoid, ReLU, Softmax, LogSoftmax

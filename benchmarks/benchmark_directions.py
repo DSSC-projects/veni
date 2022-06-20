@@ -18,9 +18,6 @@ from torch.utils import data
 from torchvision.datasets import MNIST
 from time import time
 
-
-jax.config.update('jax_platform_name', 'cpu')
-
 PATH = "./direction_benchmarks/"
 # define hyperparameters
 num_epochs = 15
