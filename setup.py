@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 meta = {}
 with open("./veni/meta.py") as fp:
@@ -45,7 +45,7 @@ setup(
     keywords=KEYWORDS,
     url=URL,
     license='MIT',
-    packages=find_packages(),
+    packages=["veni"],
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
