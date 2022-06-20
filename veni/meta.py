@@ -15,5 +15,4 @@ __copyright__ = "Copyright 2022, veni contributors"
 __license__ = "MIT"
 __version__ = "0.0.1"
 __maintainer__ = __author__
-__status__ = "Alpha"
 __packagename__ = "veni"
