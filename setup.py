@@ -34,7 +34,7 @@ setup(
     author_email=MAIL,
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: MIT License',
+        'License :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -45,7 +45,7 @@ setup(
     keywords=KEYWORDS,
     url=URL,
     license='MIT',
-    packages=["veni"],
+    packages=setuptools.find_packages(),
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
