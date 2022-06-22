@@ -115,7 +115,6 @@ if __name__ == '__main__':
         start = datetime.now()
         for epoch in tqdm(range(num_epochs), desc='Epoch'):
             for i, (image, label) in enumerate(train_generator):
-                key, _ = jax.random.split(key)
                 one_hot_label = one_hot(label, n_targets)
                 g = fwd_grad(params, image, one_hot_label)
                 params = optimizer.update(params, g)
