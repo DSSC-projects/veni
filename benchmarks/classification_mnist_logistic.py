@@ -23,7 +23,7 @@ num_epochs = 10
 n_targets = 10
 step_size = 1e-4
 logging_freq = 200
-save_path = 'logs/logistic_MNIST'
+save_path = './logs/'
 
 
 class tf(object):
