@@ -1,0 +1,15 @@
+- name: Colab Badge Action
+  # You may pin to the exact commit or the version.
+  # uses: trsvchn/colab-badge-action@8f705b0228595bdaa07042795e0f5d57deda2d49
+  uses: trsvchn/colab-badge-action@v4
+  with:
+    # Which notebooks to check: all or just committed: all | latest.
+    check: # optional, default is all
+    # Branch that the badge will target. Defaults to the current branch.
+    target_branch: # optional, default is 
+    # Repository that the badge will target. Defaults to the current repository.
+    target_repository: # optional, default is 
+    # Update badges. Only badges added by this action will be updated.
+    update: # optional, default is true
+    # Verbose mode. Print some information. Defaults to false.
+    verbose: # optional
