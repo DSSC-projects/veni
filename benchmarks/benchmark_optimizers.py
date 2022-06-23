@@ -13,7 +13,6 @@ from torch.utils import data
 from torchvision.datasets import MNIST
 from tqdm import tqdm
 
-# jax.config.update('jax_platform_name','cpu')
 
 PATH = "./"
 # define hyperparameters
