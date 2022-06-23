@@ -2,6 +2,7 @@ from jax.tree_util import tree_map
 import jax
 import jax.numpy as jnp
 from .module import Optimizer, Sampler
+import torch
 
 
 class SGD(Optimizer):
@@ -108,6 +109,15 @@ class Adam(Optimizer):
 
 
 def plist_reduce(vs, js):
+    """Multiply the jacobian vector product with the tangent directions
+
+    :param vs: tangent directions
+    :type vs: list(tuple(jnp.array, jnp.array))
+    :param js: jacobian vector product
+    :type js: float
+    :return: multiply the jacobian vector product with the tangent directions
+    :rtype: list(tuple(jnp.array, jnp.array))
+    """
     res = []
     how_many_vs = len(vs)
     len_v = len(vs[0])
@@ -124,51 +134,51 @@ def plist_reduce(vs, js):
 
 
 class NormalLikeSampler(Sampler):
-    def __init__(self, key=None):
+    def __init__(self):
         """Sampler for sampling from a N(0,1) distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super(NormalLikeSampler, self).__init__(key)
+        super(NormalLikeSampler, self).__init__()
 
-    def forward(self, arr):
-        sample = jax.random.normal(self._key, arr.shape)
-        self._key, _ = jax.random.split(self._key)
-        return sample
+    def _sample_vect(self):
+        return torch.normal(0, 1, (self._params_len,), device=self.device).cpu().numpy()
 
 
 class RademacherLikeSampler(Sampler):
-    def __init__(self, key=None):
+    def __init__(self):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super(RademacherLikeSampler, self).__init__(key)
+        super(RademacherLikeSampler, self).__init__()
+        self._p = None
 
-    def forward(self, arr):
-        sample = jax.random.rademacher(self._key, arr.shape, dtype='float32')
-        self._key, _ = jax.random.split(self._key)
-        return sample
+    def _sample_vect(self):
+        if self._p is None:
+            self._p = torch.ones((self._params_len,)) * 0.5
+        sample = torch.bernoulli(self._p)
+        sample.mul_(2).add_(-1).cpu()
+        return sample.numpy()
 
 
 class TruncatedNormalLikeSampler(Sampler):
-    def __init__(self, key=None, lower=-1, upper=1):
+    def __init__(self, lower=-1, upper=1):
         """Sampler for sampling from a Rademacher distribution
 
         :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
         :type key: jax.random.PRNGKey, optional
         """
-        super(TruncatedNormalLikeSampler, self).__init__(key)
+        super(TruncatedNormalLikeSampler, self).__init__()
         self.lower = lower
         self.upper = upper
 
-    def forward(self, arr):
-        sample = jax.random.truncated_normal(self._key, self.lower, self.upper,
-                                             arr.shape, dtype='float32')
-        self._key, _ = jax.random.split(self._key)
-        return sample
+    def _sample_vect(self):
+        sample = torch.empty((self._params_len,))
+        torch.nn.init.trunc_normal_(sample, 0., 1., self.lower, self.upper)
+        return sample.numpy()
 
 
 def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):
@@ -191,12 +201,12 @@ def grad_fwd(params, x, y, loss, dirs=1, sampler=NormalLikeSampler()):
     """
 
     if dirs == 1:
-        v = tree_map(sampler, params)
+        v = sampler(params)
         _, j = jax.jvp(lambda p: loss(p, x, y), (params, ), (v,))
         return tree_map(lambda a: jnp.dot(a, j), v)
 
     else:
-        vs = [tree_map(sampler, params) for _ in range(dirs)]
+        vs = [sampler(params) for _ in range(dirs)]
         js = [jax.jvp(lambda p: loss(p, x, y), (params, ), (v,))[1]
               for v in vs]
 
