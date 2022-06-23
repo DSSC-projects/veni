@@ -1,17 +1,12 @@
-import sys
-
-sys.path.append('../')
-
 import matplotlib.pyplot as plt
 import jax
 from jax import jit, grad
 import csv
 import jax.numpy as jnp
-from torch import triplet_margin_loss
 from veni import MLP, ReLU, Softmax, Sequential, Linear
 from veni.module import Module
 from veni.utils import NumpyLoader, one_hot
-from veni.optim import SGD, Adam, grad_fwd
+from veni.optim import SGD, Adam, grad_fwd, NormalLikeSampler
 from veni.functiontools import CrossEntropy
 import numpy as np
 from torch.utils import data
@@ -78,21 +73,19 @@ def accuracy(y, y_hat):
     return jnp.mean(y == model_predictions)
 
 
-def grad_bwd(params, x, y, loss, key):
+def grad_bwd(params, x, y, loss):
     grads = grad(loss)(params, x, y)
     return grads
 
 
-def update(params, x, y, loss, optimizer, key, dirs=1,
-           grad_type='fwd', sampler=None):
-    key = jax.random.split(key)
+def update(params, x, y, loss, optimizer, dirs=1, grad_type='fwd', sampler=None):
     if grad_type == 'fwd':
         if sampler is None:
             grads = grad_fwd(params, x, y, loss, dirs)
         else:
             grads = grad_fwd(params, x, y, loss, dirs, sampler)
     elif grad_type == 'bwd':
-        grads = grad_bwd(params, x, y, loss, key)
+        grads = grad_bwd(params, x, y, loss)
     else:
         raise ValueError(
             f"Invalid grad_type, expected 'fwd' or 'bwd' got '{grad_type}'")
@@ -134,7 +127,7 @@ for epoch in range(num_epochs):
         one_hot_label = one_hot(y, n_targets)
         # update parameters
         params = update(params, x, one_hot_label, loss,
-                        optimizer, key, None, 'bwd')
+                        optimizer, None, 'bwd')
         bs += x.shape[0]
         running_loss += loss(params, x, one_hot_label)*x.shape[0]
         count += 1
@@ -168,6 +161,7 @@ for d in [1, 5, 10, 50, 100]:
     final_time = []
     count = 0
     start = time()
+    sampler = NormalLikeSampler()
     for epoch in range(num_epochs):
         running_loss = 0
         running_accuracy = 0
@@ -177,7 +171,7 @@ for d in [1, 5, 10, 50, 100]:
             one_hot_label = one_hot(y, n_targets)
             # update parameters
             params = update(params, x, one_hot_label, loss,
-                            optimizer, key, d, 'fwd')
+                            optimizer, d, 'fwd', sampler)
             bs += x.shape[0]
             running_loss += loss(params, x, one_hot_label)*x.shape[0]
             count += 1

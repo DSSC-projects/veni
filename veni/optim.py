@@ -136,22 +136,27 @@ def plist_reduce(vs, js):
 class NormalLikeSampler(Sampler):
     def __init__(self):
         """Sampler for sampling from a N(0,1) distribution
-
-        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
-        :type key: jax.random.PRNGKey, optional
         """
         super(NormalLikeSampler, self).__init__()
 
     def _sample_vect(self):
         return torch.normal(0, 1, (self._params_len,), device=self.device).cpu().numpy()
+ 
+
+class UniformLikeSampler(Sampler):
+    def __init__(self):
+        """Sampler for sampling from a Uniform distribution
+        """
+        super(UniformLikeSampler, self).__init__()
+        self.numb = -torch.sqrt(torch.tensor([12]))
+
+    def _sample_vect(self):
+        return torch.rand((self._params_len,), device=self.device).mul_(self.numb).add_(1. - self.numb / 2).cpu().numpy()
 
 
 class RademacherLikeSampler(Sampler):
     def __init__(self):
         """Sampler for sampling from a Rademacher distribution
-
-        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
-        :type key: jax.random.PRNGKey, optional
         """
         super(RademacherLikeSampler, self).__init__()
         self._p = None
@@ -167,9 +172,6 @@ class RademacherLikeSampler(Sampler):
 class TruncatedNormalLikeSampler(Sampler):
     def __init__(self, lower=-1, upper=1):
         """Sampler for sampling from a Rademacher distribution
-
-        :param key: jax prng key, defaults to None. Acts like the seed for prng sampling initialization if key is None it is initialized using the internal clock
-        :type key: jax.random.PRNGKey, optional
         """
         super(TruncatedNormalLikeSampler, self).__init__()
         self.lower = lower
