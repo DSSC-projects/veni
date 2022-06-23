@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 # jax.config.update('jax_platform_name','cpu')
 
-PATH = "./optimizers_benchmarks/"
+PATH = "."
 # define hyperparameters
 num_epochs = 10
 batch_size = 24
