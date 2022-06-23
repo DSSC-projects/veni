@@ -15,17 +15,30 @@ from veni.functiontools import CrossEntropy
 import numpy as np
 from torch.utils import data
 from torchvision.datasets import MNIST
-from tqdm import tqdm
+from time import time
 
-
-
-PATH = "./"
+PATH = "./direction_benchmarks/"
 # define hyperparameters
-num_epochs = 10
-batch_size = 24
+num_epochs = 15
 n_targets = 10
-key = jax.random.PRNGKey(111)
-sampler = NormalLikeSampler()
+key = jax.random.PRNGKey(210)
+batch_size = 64
+eta = 0.0005
+
+
+class tf(object):
+    def __call__(self, pic):
+        return (np.ravel(np.array(pic, dtype=jnp.float32)) / 255. - 0.5) * 2
+
+
+training_dataset = MNIST('/tmp/mnist/', train=True,
+                         download=True, transform=tf())
+training_generator = NumpyLoader(training_dataset, batch_size=batch_size)
+
+
+testing_dataset = MNIST('/tmp/mnist/', train=False,
+                        download=True, transform=tf())
+testing_generator = NumpyLoader(testing_dataset, batch_size=batch_size)
 
 # define network
 
@@ -34,6 +47,8 @@ class MLP(Module):
     def __init__(self):
         self.layers = Sequential([
             Linear(28*28, 1024, key),
+            ReLU(),
+            Linear(1024, 1024, key),
             ReLU(),
             Linear(1024, 10, key),
             Softmax()
@@ -62,46 +77,6 @@ def accuracy(y, y_hat):
     return jnp.mean(y == model_predictions)
 
 
-class tf(object):
-    def __call__(self, pic):
-        return np.array(np.ravel(pic), dtype=jnp.float32)/255
-
-
-def evaluatePerf(gen):
-    acc = 0
-    count = 0
-    for x, y in gen:
-        y_hat = model(x, params)
-        acc += accuracy(y, y_hat)*x.shape[0]
-        count += x.shape[0]
-    return acc / count
-
-# Get dataset
-
-
-# Define our dataset, using torch datasets
-mnist_dataset = MNIST('/tmp/mnist/', download=True, transform=tf(), train=True)
-training_generator = NumpyLoader(
-    mnist_dataset, batch_size=batch_size, num_workers=0)
-
-mnist_dataset = MNIST('/tmp/mnist/', download=True,
-                      transform=tf(), train=False)
-testing_generator = NumpyLoader(
-    mnist_dataset, batch_size=batch_size, num_workers=0)
-
-# Get the full train dataset (for checking accuracy while training)
-train_images = np.array(mnist_dataset.train_data).reshape(
-    len(mnist_dataset.train_data), -1)
-train_labels = one_hot(np.array(mnist_dataset.train_labels), n_targets)
-
-# Get full test dataset
-mnist_dataset_test = MNIST('/tmp/mnist/', download=True, train=False)
-test_images = jnp.array(mnist_dataset_test.test_data.numpy().reshape(
-    len(mnist_dataset_test.test_data), -1), dtype=jnp.float32)
-test_labels = one_hot(np.array(mnist_dataset_test.test_labels), n_targets)
-
-
-
 def grad_bwd(params, x, y, loss):
     grads = grad(loss)(params, x, y)
     return grads
@@ -122,275 +97,100 @@ def update(params, x, y, loss, optimizer, dirs=1, grad_type='fwd', sampler=None)
     return optimizer(params, grads)
 
 
-# =========== HERE TEST START ========== #
+def evaluatePerf(gen, model):
+    acc = 0
+    count = 0
+    for x, y in gen:
+        y_hat = model(x, params)
+        acc += accuracy(y, y_hat)*x.shape[0]
+        count += x.shape[0]
+    return acc / count
+
+
+# =========== HERE TEST STARTS ========== #
 model = MLP()
 params = model.params
-
-# ADAM test 1
-print("ADAM test 1 start: lr = 1e-3")
-optimizer = Adam(params, eta=1e-3)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'adam_1e-3.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'adam_1e-3.png')
-plt.close()
-
 
 # ADAM test
-model = MLP()
-params = model.params
-
-print("ADAM test 2 start: lr = 1e-4")
-optimizer = Adam(params, eta=1e-4)
+print("ADAM test for backward")
+optimizer = Adam(params, eta=eta)
 
 final_accuracy = []
+train_loss = []
+train_accuracy = []
 iteration = []
+final_time = []
 count = 0
-for epoch in tqdm(range(num_epochs)):
+start = time()
+for epoch in range(num_epochs):
+    running_loss = 0
+    running_accuracy = 0
+    bs = 0
     for x, y in training_generator:
         key = jax.random.split(key)
         one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
         # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
+        params = update(params, x, one_hot_label, loss,
+                        optimizer, None, 'bwd')
+        bs += x.shape[0]
+        running_loss += loss(params, x, one_hot_label)*x.shape[0]
         count += 1
 
     iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
+    final_accuracy.append(float(evaluatePerf(testing_generator, model)))
+    train_loss.append(running_loss/bs)
+    train_accuracy.append(float(evaluatePerf(training_generator, model)))
+    final_time.append(time()-start)
 
-# ADAM test 3
-model = MLP()
-params = model.params
-
-print("ADAM test 3 start: lr = 1e-5")
-optimizer = Adam(params, eta=1e-5)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'adam_1e-5.csv', 'w') as f:
+with open(PATH+'adam_bwd.csv', 'w') as f:
     writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
+    writer.writerows(
+        zip(iteration, train_loss, train_accuracy, final_accuracy, final_time))
 
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'adam_1e-5.png')
+plt.plot(jnp.array(iteration), jnp.array(train_loss))
+plt.savefig(PATH+'adam_bwd.png')
 plt.close()
 
-# SGD test
-model = MLP()
-params = model.params
+for d in [1, 5, 10, 50, 100]:
+    print(f"ADAM test for forward {d} dir")
 
-print("SGD test 1 start: lr = 1e-3, momentum = 0, dampening = 0")
-optimizer = SGD(params, eta=1e-3)
+    optimizer = Adam(params, eta=eta)
 
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
+    model = MLP()
+    params = model.params
+    final_accuracy = []
+    train_loss = []
+    train_accuracy = []
+    iteration = []
+    final_time = []
+    count = 0
+    start = time()
+    sampler = NormalLikeSampler()
+    for epoch in range(num_epochs):
+        running_loss = 0
+        running_accuracy = 0
+        bs = 0
+        for x, y in training_generator:
+            key = jax.random.split(key)
+            one_hot_label = one_hot(y, n_targets)
+            # update parameters
+            params = update(params, x, one_hot_label, loss,
+                            optimizer, d, 'fwd', sampler)
+            bs += x.shape[0]
+            running_loss += loss(params, x, one_hot_label)*x.shape[0]
+            count += 1
 
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
+        iteration.append(count + epoch)
+        final_accuracy.append(float(evaluatePerf(testing_generator, model)))
+        train_loss.append(running_loss/bs)
+        train_accuracy.append(float(evaluatePerf(training_generator, model)))
+        final_time.append(time()-start)
 
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
+    with open(PATH+f"adam_fwd_{d}.csv", 'w') as f:
+        writer = csv.writer(f)
+        writer.writerows(
+            zip(iteration, train_loss, train_accuracy, final_accuracy, final_time))
 
-with open(PATH+'sgd_1e-3-0-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-3-0-0.png')
-plt.close()
-
-# SGD test
-model = MLP()
-params = model.params
-
-print("SGD test 2 start: lr = 1e-4, momentum = 0, dampening = 0")
-optimizer = SGD(params, eta=1e-4)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'sgd_1e-4-0-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-4-0-0.png')
-plt.close()
-
-# SGD test
-model = MLP()
-params = model.params
-
-print("SGD test 3 start: lr = 1e-5, momentum = 0, dampening = 0")
-optimizer = SGD(params, eta=1e-5)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'sgd_1e-5-0-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-5-0-0.png')
-plt.close()
-
-# SGD test
-model = MLP()
-params = model.params
-
-print("SGD test 4 start: lr = 1e-3, momentum = 0.9, dampening = 0")
-optimizer = SGD(params, eta=1e-3, momentum=0.9)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'sgd_1e-3-09-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-3-0.9-0.png')
-plt.close()
-
-# SGD test 1
-model = MLP()
-params = model.params
-
-print("SGD test 5 start: lr = 1e-4, momentum = 0.9, dampening = 0")
-optimizer = SGD(params, eta=1e-4, momentum=0.9)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'sgd_1e-4-0.9-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-4-0.9-0.png')
-plt.close()
-
-# SGD test 1
-model = MLP()
-params = model.params
-
-print("SGD test 6 start: lr = 1e-5, momentum = 0.9, dampening = 0")
-optimizer = SGD(params, eta=1e-5, momentum=0.9)
-
-final_accuracy = []
-iteration = []
-count = 0
-for epoch in tqdm(range(num_epochs)):
-    for x, y in training_generator:
-        key = jax.random.split(key)
-        one_hot_label = one_hot(y, n_targets)
-        y_hat = model(x, params)
-
-        # update parameters
-        params = update(params, x, one_hot_label, loss, optimizer, dirs=1, grad_type='fwd', sampler=sampler)
-        count += 1
-
-    iteration.append(count + epoch)
-    final_accuracy.append(float(evaluatePerf(testing_generator)))
-
-with open(PATH+'sgd_1e-5-0.9-0.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(zip(iteration, final_accuracy))
-
-plt.plot(jnp.array(iteration), jnp.array(final_accuracy))
-plt.savefig(PATH+'sgd_1e-5-0.9-0.png')
-plt.close()
+    plt.plot(jnp.array(iteration), jnp.array(train_loss))
+    plt.savefig(PATH+f"adam_fwd_{d}.png")
+    plt.close()
