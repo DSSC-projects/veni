@@ -13,8 +13,7 @@ A Python package for deep learning using forward automatic differentiation based
 * [Description](#description)
 * [Dependencies and installation](#dependencies-and-installation)
 	* [Installing from source](#installing-from-source)
-<!-- * [Documentation](#documentation) -->
-<!-- * [Testing](#testing) -->
+* [Documentation](#documentation)
 * [Examples and Tutorials](#examples-and-tutorials)
 * * [Benchmarks](#benchmarks)
 * [References](#references)
@@ -39,26 +38,15 @@ You can also install it using pip via
 ```bash
 > python -m pip install git+https://github.com/DSSC-projects/veni
 ```
-<!-- ## Documentation -->
-<!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
+## Documentation
+**veni** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](https://veni.readthedocs.io/en/latest/). To build the html version of the docs locally simply:
 
-<!-- ```bash -->
-<!-- > cd docs -->
-<!-- > make html -->
-<!-- ``` -->
+```bash
+cd docs
+make html
+```
+The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
-<!-- The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse. -->
-
-
-<!-- ## Testing -->
-
-<!-- We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyDMD). -->
-
-<!-- To run tests locally (`pytest` is required): -->
-
-<!-- ```bash -->
-<!-- > pytest -->
-<!-- ``` -->
 
 ## Examples and Tutorials
 The directory `examples` contains some examples showing how to use **VENI**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
@@ -122,6 +110,18 @@ We'd love to accept your patches and contributions to this project. There are ju
 [pull request]: https://help.github.com/articles/creating-a-pull-request
 
 ## Citations
+If you are considering using **veni** on your reaserch please cite us:
+
+```bash
+@software{Tomba_veni_2022,
+author = {Tomba, Francesco and Coscia, Dario and Pierro, Alessandro},
+month = {6},
+title = {{veni}},
+url = {https://github.com/DSSC-projects/veni},
+version = {0.0.1},
+year = {2022}
+}
+```
 
 ## License
 
