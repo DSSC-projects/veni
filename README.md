@@ -113,15 +113,9 @@ We'd love to accept your patches and contributions to this project. There are ju
 If you are considering using **veni** on your reaserch please cite us:
 
 ```bash
-@software{Tomba_veni_2022,
-author = {Tomba, Francesco and Coscia, Dario and Pierro, Alessandro},
-month = {6},
-title = {{veni}},
-url = {https://github.com/DSSC-projects/veni},
-version = {0.0.1},
-year = {2022}
-}
+Tomba, F., Coscia, D., & Pierro, A. (2022). veni (Version 0.0.1) [Computer software]. https://github.com/DSSC-projects/veni
 ```
+You can also download the bibtex format from the citation widget on the sidebar
 
 ## License
 
