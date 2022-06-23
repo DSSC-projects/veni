@@ -19,7 +19,7 @@ from tqdm import tqdm
 
 
 
-PATH = "./optimizers_benchmarks/"
+PATH = "./"
 # define hyperparameters
 num_epochs = 10
 batch_size = 24
