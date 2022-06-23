@@ -12,7 +12,6 @@
 import sys
 import pathlib
 project = 'veni'
-copyright = '2022, Dario Coscia, Alessandro Pierro, Francesco Tomba'
 author = 'Dario Coscia, Alessandro Pierro, Francesco Tomba'
 
 # The full version, including alpha/beta/rc tags
