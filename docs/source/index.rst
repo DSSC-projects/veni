@@ -13,6 +13,8 @@ Table of contents
 
    -  `Installing from source <#installing-from-source>`__
 
+-  `Documentation <#documentation>`__
+
 -  `Examples and Tutorials <#examples-and-tutorials>`__
 
 -  
@@ -26,6 +28,8 @@ Table of contents
 -  `How to contribute <#how-to-contribute>`__
 
    -  `Submitting a patch <#submitting-a-patch>`__
+
+-  `License <#license>`__
 
 Description
 -----------
@@ -62,63 +66,27 @@ You can also install it using pip via
 
    > python -m pip install git+https://github.com/DSSC-projects/veni
 
-.. raw:: html
+Documentation
+-------------
 
-   <!-- ## Documentation -->
+**veni** uses `Sphinx <http://www.sphinx-doc.org/en/stable/>`__ for code
+documentation. You can view the documentation online
+`here <https://veni.readthedocs.io/en/latest/>`__. To build the html
+version of the docs locally simply:
 
-.. raw:: html
+.. code:: bash
 
-   <!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
+   cd docs
+   make html
 
-.. raw:: html
-
-   <!-- ```bash -->
-
-.. raw:: html
-
-   <!-- > cd docs -->
-
-.. raw:: html
-
-   <!-- > make html -->
-
-.. raw:: html
-
-   <!-- ``` -->
-
-.. raw:: html
-
-   <!-- The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse. -->
-
-.. raw:: html
-
-   <!-- ## Testing -->
-
-.. raw:: html
-
-   <!-- We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyDMD). -->
-
-.. raw:: html
-
-   <!-- To run tests locally (`pytest` is required): -->
-
-.. raw:: html
-
-   <!-- ```bash -->
-
-.. raw:: html
-
-   <!-- > pytest -->
-
-.. raw:: html
-
-   <!-- ``` -->
+The generated html can be found in ``docs/build/html``. Open up the
+``index.html`` you find there to browse.
 
 Examples and Tutorials
 ----------------------
 
-The directory ``examples`` contains some examples showing how to use
-**VENI**. In particular we show how to create simple deep learning
+The directory `examples <https://github.com/DSSC-projects/veni/tree/main/examples>`__ contains some examples showing how to use
+**veni**. In particular we show how to create simple deep learning
 architectures, how to train via forward automatic differentiation an
 architecture, and finally how to sample differently candidate
 directions.
@@ -126,10 +94,10 @@ directions.
 Benchmarks
 ----------
 
-The directory ``benchmarks`` contains some important benchmarks showing
+The directory `benchmarks <https://github.com/DSSC-projects/veni/tree/main/benchmarks>`__ contains some important benchmarks showing
 how to reproduce `Atılım Günes Baydin et
 al. <https://doi.org/10.48550/arXiv.2202.08587>`__ results by using the
-simple **VENI** interface. We further provide logs for efficient
+simple **veni** interface. We further provide logs for efficient
 analysis of the data. Further benchmark involving directions and
 optimizers are also available for testing.
 
@@ -148,6 +116,18 @@ To implement the package we follow these works:
    Wanderman-Milne, S., & Zhang, Q. (2018). JAX: composable
    transformations of Python+NumPy programs (0.3.13) [Computer
    software]. http://github.com/google/jax
+-  Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array
+   programming with NumPy. Nature 585, 357–362 (2020). DOI:
+   10.1038/s41586-020-2649-2.
+-  Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury,
+   Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca
+   Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito,
+   Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner,
+   Lu Fang, Junjie Bai, and Soumith Chintala. Pytorch: An imperative
+   style, high-performance deep learning library. In H. Wallach, H.
+   Larochelle, A. Beygelzimer, F. d’Alch ́e-Buc, E. Fox, and R. Garnett,
+   editors, Advances in Neural Information Processing Systems 32, pages
+   8024–8035. Curran Associates, Inc., 2019.
 
 Authors and contributors
 ------------------------
@@ -158,7 +138,7 @@ Scientific Computing <https://dssc.units.it/>`__ master students:
    - `Dario Coscia <https://github.com/dario-coscia>`__ 
    - `Alessandro Pierro <https://github.com/AlessandroPierro>`__
 
-Contact us by email for further information or questions about **VENI**,
+Contact us by email for further information or questions about **veni**,
 or suggest pull requests. Contributions improving either the code or the
 documentation are welcome!
 
@@ -202,8 +182,39 @@ Submitting a patch
    Please, remember to rebase properly in order to maintain a clean,
    linear git history.
 
+Citations
+---------
+
+If you are considering using **veni** on your reaserch please cite us:
+
+APA:
+
+.. code:: bash
+
+   Tomba, F., Coscia, D., & Pierro, A. (2022). veni (Version 0.0.1) [Computer software]. https://github.com/DSSC-projects/veni
+
+BibTex:
+
+.. code:: bash
+
+   @software{Tomba_veni_2022,
+   author = {Tomba, Francesco and Coscia, Dario and Pierro, Alessandro},
+   month = {6},
+   title = {{veni}},
+   url = {https://github.com/DSSC-projects/veni},
+   version = {0.0.1},
+   year = {2022}
+   }
+
+
+License
+-------
+
+See the `LICENSE <https://github.com/DSSC-projects/veni/blob/main/LICENSE.rst>`__ file for license rights and
+limitations (MIT).
+
 See more...
-^^^^^^^^^^^^
+-----------
 
 .. toctree::
    :maxdepth: 2

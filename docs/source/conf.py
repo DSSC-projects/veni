@@ -12,8 +12,8 @@
 import sys
 import pathlib
 project = 'veni'
-copyright = '2022, Dario Coscia, Alessandro Pierro, Francesco Tomba'
 author = 'Dario Coscia, Alessandro Pierro, Francesco Tomba'
+copyright = '2022, veni authors'
 
 # The full version, including alpha/beta/rc tags
 release = '2022'

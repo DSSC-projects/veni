@@ -13,8 +13,7 @@ A Python package for deep learning using forward automatic differentiation based
 * [Description](#description)
 * [Dependencies and installation](#dependencies-and-installation)
 	* [Installing from source](#installing-from-source)
-<!-- * [Documentation](#documentation) -->
-<!-- * [Testing](#testing) -->
+* [Documentation](#documentation)
 * [Examples and Tutorials](#examples-and-tutorials)
 * * [Benchmarks](#benchmarks)
 * [References](#references)
@@ -39,26 +38,15 @@ You can also install it using pip via
 ```bash
 > python -m pip install git+https://github.com/DSSC-projects/veni
 ```
-<!-- ## Documentation -->
-<!-- **PyDMD** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyDMD/). To build the html version of the docs locally simply: -->
+## Documentation
+**veni** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](https://veni.readthedocs.io/en/latest/). To build the html version of the docs locally simply:
 
-<!-- ```bash -->
-<!-- > cd docs -->
-<!-- > make html -->
-<!-- ``` -->
+```bash
+cd docs
+make html
+```
+The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
-<!-- The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse. -->
-
-
-<!-- ## Testing -->
-
-<!-- We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyDMD). -->
-
-<!-- To run tests locally (`pytest` is required): -->
-
-<!-- ```bash -->
-<!-- > pytest -->
-<!-- ``` -->
 
 ## Examples and Tutorials
 The directory `examples` contains some examples showing how to use **VENI**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
@@ -74,6 +62,16 @@ propagation, 2022
 * D. Silver, A. Goyal, I. Danihelka, M. Hessel, and H. van Hasselt. _Learning by directional
 gradient descent. In International Conference on Learning Representations, 2022
 * Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C., Maclaurin, D., Necula, G., Paszke, A., VanderPlas, J., Wanderman-Milne, S., & Zhang, Q. (2018). JAX: composable transformations of Python+NumPy programs (0.3.13) [Computer software]. http://github.com/google/jax
+* Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
+* Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury,
+Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca
+Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito,
+Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner,
+Lu Fang, Junjie Bai, and Soumith Chintala. Pytorch: An imperative
+style, high-performance deep learning library. In H. Wallach, H. Larochelle,
+A. Beygelzimer, F. d'Alch ́e-Buc, E. Fox, and R. Garnett, editors, Advances
+in Neural Information Processing Systems 32, pages 8024–8035. Curran
+Associates, Inc., 2019.
 
 
 ## Authors and contributors
@@ -122,6 +120,12 @@ We'd love to accept your patches and contributions to this project. There are ju
 [pull request]: https://help.github.com/articles/creating-a-pull-request
 
 ## Citations
+If you are considering using **veni** on your reaserch please cite us:
+
+```bash
+Tomba, F., Coscia, D., & Pierro, A. (2022). veni (Version 0.0.1) [Computer software]. https://github.com/DSSC-projects/veni
+```
+You can also download the bibtex format from the citation widget on the sidebar
 
 ## License
 

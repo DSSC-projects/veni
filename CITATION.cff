@@ -1,0 +1,13 @@
+cff-version: 0.0.1
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Tomba"
+  given-names: "Francesco"
+- family-names: "Coscia"
+  given-names: "Dario"
+- family-names: "Pierro"
+  given-names: "Alessandro"
+title: "veni"
+version: 0.0.1
+date-released: 2022-06-23
+url: "https://github.com/DSSC-projects/veni"
