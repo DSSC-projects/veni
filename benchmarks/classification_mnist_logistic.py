@@ -11,9 +11,9 @@ import sys
 sys.path.append('../')
 from veni.net import Module, Sequential, Linear
 from veni.function import Sigmoid
-from veni.utils import one_hot, NumpyLoader, FlattenAndCast, _get_vector
+from veni.utils import one_hot, NumpyLoader
 from veni.functiontools import CrossEntropy
-from veni.optim import SGD
+from veni.optim import SGD, NormalLikeSampler
 
 
 dspath = '../../datasets'
@@ -59,17 +59,8 @@ def accuracy(y, y_hat):
     return jnp.mean(y == model_predictions)
 
 
-def get_vector(params):
-    v_shaped = []
-    for w, b in params:
-        v_w = jnp.array(np.random.normal(0, 1, w.shape))
-        v_b = jnp.array(np.random.normal(0, 1, b.shape))
-        v_shaped.append((v_w, v_b))
-    return v_shaped
-
-
-def fwd_grad(params, x, y):
-    v = _get_vector(key, params)
+def fwd_grad(params, x, y, sampler):
+    v = sampler(params)
     _, proj = jvp(lambda p: loss(p, x, y), (params, ), (v,))
 
     return [(proj * dw, proj * db) for dw, db in v]
@@ -113,16 +104,17 @@ if __name__ == '__main__':
         optimizer = SGD(params, eta=2e-4)
         iter = 0
         start = datetime.now()
+        sampler = NormalLikeSampler()
         for epoch in tqdm(range(num_epochs), desc='Epoch'):
             for i, (image, label) in enumerate(train_generator):
                 one_hot_label = one_hot(label, n_targets)
-                g = fwd_grad(params, image, one_hot_label)
+                g = fwd_grad(params, image, one_hot_label, sampler)
                 params = optimizer.update(params, g)
                 loss_item = loss(params, image, one_hot_label)
                 results.append(['fwd', k, iter, (datetime.now() - start).total_seconds(), loss_item])
                 iter += 1
 
-    df = pd.DataFrame(results, columns=['method', 'run', 'iter', 'time', 'loss'])
+    df = pd.DataFrame(results, columns=['method', 'run', 'iter', 'time', 'train_loss'])
     df.to_csv(f'{save_path}/logistic_MNIST.csv', index=False)
 
     print(f"Results saved to {save_path}/logistic_MNIST.csv")
