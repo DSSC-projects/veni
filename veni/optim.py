@@ -148,10 +148,10 @@ class UniformLikeSampler(Sampler):
         """Sampler for sampling from a Uniform distribution
         """
         super(UniformLikeSampler, self).__init__()
-        self.numb = -torch.sqrt(torch.tensor([12])).to(self.device)
+        self.numb = -torch.sqrt(torch.tensor([12])).mul_(0.5).to(self.device)
 
     def _sample_vect(self):
-        return torch.rand((self._params_len,), device=self.device).mul_(self.numb).add_(1. - self.numb / 2).cpu().numpy()
+        return torch.rand((self._params_len,), device=self.device).mul_(2.).add_(-1.).mul_(numb).cpu().numpy()
 
 
 class RademacherLikeSampler(Sampler):
