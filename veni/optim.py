@@ -151,7 +151,7 @@ class UniformLikeSampler(Sampler):
         self.numb = -torch.sqrt(torch.tensor([12])).mul_(0.5).to(self.device)
 
     def _sample_vect(self):
-        return torch.rand((self._params_len,), device=self.device).mul_(2.).add_(-1.).mul_(numb).cpu().numpy()
+        return torch.rand((self._params_len,), device=self.device).mul_(2.).add_(-1.).mul_(self.numb).cpu().numpy()
 
 
 class RademacherLikeSampler(Sampler):
