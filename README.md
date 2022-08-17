@@ -48,10 +48,10 @@ make html
 The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
 ## Examples and Tutorials
-The directory `examples` contains some examples showing how to use **VENI**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
+The directory `examples` contains some examples showing how to use **veni**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
 
 ## Benchmarks
-The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data. Further benchmark involving directions and optimizers are also available for testing.
+The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **veni** interface. We further provide logs for efficient analysis of the data. Further benchmark involving directions and optimizers are also available for testing.
 
 ## Tests
 
@@ -70,7 +70,7 @@ pytest
 * [Alessandro Pierro](https://github.com/AlessandroPierro)
 
 
-Contact us by email for further information or questions about **VENI**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
+Contact us by email for further information or questions about **veni**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
 
 
 ## How to contribute
