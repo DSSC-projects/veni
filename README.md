@@ -15,7 +15,8 @@ A Python package for deep learning using forward automatic differentiation based
 	* [Installing from source](#installing-from-source)
 * [Documentation](#documentation)
 * [Examples and Tutorials](#examples-and-tutorials)
-* * [Benchmarks](#benchmarks)
+* [Benchmarks](#benchmarks)
+* [Tests](#tests)
 * [References](#references)
 	<!-- * [Recent works with PyDMD](#recent-works-with-pydmd) -->
 * [Authors and contributors](#authors-and-contributors)
@@ -47,12 +48,21 @@ make html
 ```
 The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
-
 ## Examples and Tutorials
 The directory `examples` contains some examples showing how to use **VENI**. In particular we show how to create simple deep learning architectures, how to train via forward automatic differentiation an architecture, and finally how to sample differently candidate directions.
 
 ## Benchmarks
 The directory `benchmarks` contains some important benchmarks showing how to reproduce [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) results by using the simple **VENI** interface. We further provide logs for efficient analysis of the data. Further benchmark involving directions and optimizers are also available for testing.
+
+## Tests
+
+In order to run the tests on the package `pytest` is needed.
+
+To tests the implementation, run on the main directory the command:
+
+```
+pytest
+```
 
 ### References
 To implement the package we follow these works:
