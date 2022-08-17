@@ -17,12 +17,11 @@ A Python package for deep learning using forward automatic differentiation based
 * [Examples and Tutorials](#examples-and-tutorials)
 * [Benchmarks](#benchmarks)
 * [Tests](#tests)
-* [References](#references)
-	<!-- * [Recent works with PyDMD](#recent-works-with-pydmd) -->
 * [Authors and contributors](#authors-and-contributors)
 * [How to contribute](#how-to-contribute)
 	* [Submitting a patch](#submitting-a-patch)
 * [License](#license)
+* [References](#references)
 
 ## Description
 **veni** is a Python package, built on JAX, providing an easy interface to deal with Neural Network using forward automatic differention. Inspired by the very recent (2021) papers of [Atılım Günes Baydin et al.](https://doi.org/10.48550/arXiv.2202.08587) and [David Silver et al.](https://openreview.net/forum?id=5i7lJLuhTm), we have decided to implement a package able to reproduce the results, and give freedom to further investigate this new emerging area of AI.
@@ -63,26 +62,6 @@ To tests the implementation, run on the main directory the command:
 ```
 pytest
 ```
-
-### References
-To implement the package we follow these works:
-
-* A. G. Baydin, B. A. Pearlmutter, D. Syme, F. Wood, and P. Torr. _Gradients without back-
-propagation, 2022
-* D. Silver, A. Goyal, I. Danihelka, M. Hessel, and H. van Hasselt. _Learning by directional
-gradient descent. In International Conference on Learning Representations, 2022
-* Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C., Maclaurin, D., Necula, G., Paszke, A., VanderPlas, J., Wanderman-Milne, S., & Zhang, Q. (2018). JAX: composable transformations of Python+NumPy programs (0.3.13) [Computer software]. http://github.com/google/jax
-* Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
-* Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury,
-Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca
-Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito,
-Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner,
-Lu Fang, Junjie Bai, and Soumith Chintala. Pytorch: An imperative
-style, high-performance deep learning library. In H. Wallach, H. Larochelle,
-A. Beygelzimer, F. d'Alch ́e-Buc, E. Fox, and R. Garnett, editors, Advances
-in Neural Information Processing Systems 32, pages 8024–8035. Curran
-Associates, Inc., 2019.
-
 
 ## Authors and contributors
 **veni** is currently developed and mantained by [Data Science and Scientific Computing](https://dssc.units.it/) master students:
@@ -140,3 +119,22 @@ You can also download the bibtex format from the citation widget on the sidebar
 ## License
 
 See the [LICENSE](LICENSE.rst) file for license rights and limitations (MIT).
+
+## References
+To implement the package we follow these works:
+
+* A. G. Baydin, B. A. Pearlmutter, D. Syme, F. Wood, and P. Torr. _Gradients without back-
+propagation, 2022
+* D. Silver, A. Goyal, I. Danihelka, M. Hessel, and H. van Hasselt. _Learning by directional
+gradient descent. In International Conference on Learning Representations, 2022
+* Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C., Maclaurin, D., Necula, G., Paszke, A., VanderPlas, J., Wanderman-Milne, S., & Zhang, Q. (2018). JAX: composable transformations of Python+NumPy programs (0.3.13) [Computer software]. http://github.com/google/jax
+* Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
+* Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury,
+Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca
+Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito,
+Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner,
+Lu Fang, Junjie Bai, and Soumith Chintala. Pytorch: An imperative
+style, high-performance deep learning library. In H. Wallach, H. Larochelle,
+A. Beygelzimer, F. d'Alch ́e-Buc, E. Fox, and R. Garnett, editors, Advances
+in Neural Information Processing Systems 32, pages 8024–8035. Curran
+Associates, Inc., 2019.
